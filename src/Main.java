@@ -1,17 +1,36 @@
 public class Main {
     public static void main(String[] args){
-        LatticeGasAutomata latticeGasAutomata = new LatticeGasAutomata(10, 10);
-
-        printLattice(latticeGasAutomata.getLattice(),10,10);
 
 
-        for(int i=1; i <= 10; i++){
+        int width = 100, height=100;
+
+        Region spawnRegion = new Region(width, height);
+        spawnRegion.addRectangle(3, 3, width/2-4, height-4, false);
+
+        Region wallRegion = new Region(width, height);
+        //middle wall
+        wallRegion.addRectangle(width/2, 0, width/2+1, height-1, false);
+        wallRegion.addRectangleBorders(0, 0, width-1, height-1, 2, false);
+
+        LatticeGasAutomata latticeGasAutomata = new LatticeGasAutomata(width, height, spawnRegion.getRegion(), wallRegion.getRegion());
+
+        System.out.println("Spawn region: -------------------");
+        spawnRegion.printRegion();
+
+        System.out.println("Wall region: -------------------");
+        wallRegion.printRegion();
+
+
+        System.out.println("Estado inicial: -------------------");
+        printLattice(latticeGasAutomata.getLattice(),width,height);
+
+
+        for(int i=1; i <= 100000; i++){
             latticeGasAutomata.update();
-
-            System.out.println("ITERATION (" + i + ")-----------------------");
-
-            printLattice(latticeGasAutomata.getLattice(),10,10);
         }
+
+        System.out.println("Estado final: -------------------");
+        printLattice(latticeGasAutomata.getLattice(),width,height);
 
 
 

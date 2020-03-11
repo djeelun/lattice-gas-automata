@@ -9,6 +9,7 @@ public class LatticeGasAutomata {
 
      */
     private char[][] lattice;
+    private boolean[][] spawnRegion, wallRegion;
 
     private int height;
     private int width;
@@ -45,7 +46,7 @@ public class LatticeGasAutomata {
         if((value & S) != 0){
 
             value = (char)(invertVelocity((char)(value & A)) + invertVelocity((char)(value & B)) + invertVelocity((char)(value & C))
-                +  invertVelocity((char)(value & D)) +  invertVelocity((char)(value & E)) +  invertVelocity((char)(value & F)));
+                +  invertVelocity((char)(value & D)) +  invertVelocity((char)(value & E)) +  invertVelocity((char)(value & F)) + S);
 
         }else{
             switch (value){
@@ -89,27 +90,51 @@ public class LatticeGasAutomata {
         return value;
     }
 
-    public LatticeGasAutomata(int width, int height){
+
+    public LatticeGasAutomata(int width, int height, boolean[][] spawnRegion, boolean[][] wallRegion){
         this.width = width;
         this.height = height;
+        this.spawnRegion = spawnRegion;
+        this.wallRegion = wallRegion;
         
         this.lattice = new char[height][width];
-        
+
+        createWalls();
         fillWithParticles();
+        createRandomBit();
     }
-    
+
+    private void createWalls(){
+        for(int i=0; i<height; i++) {
+            for (int j = 0; j < width; j++) {
+                this.lattice[i][j] = this.wallRegion[i][j] ? S : 0;
+            }
+        }
+    }
+
     private void fillWithParticles(){
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
-                char value = j==0 || i==0 ? S : 0;
-                
-                value += (char)Math.round(Math.random())*R;
-                
-                if(Math.round(Math.random()) == 1){
-                    value += (char)Math.pow(2, Math.round(Math.random()*6));
+
+                char value = 0;
+
+                if(this.spawnRegion[i][j] && !this.wallRegion[i][j]) {
+
+                    if (Math.round(Math.random()) == 1) {
+                        value += (char) Math.pow(2, Math.round(Math.random() * 6));
+                    }
                 }
-                
+
+
                 lattice[i][j] = value;
+            }
+        }
+    }
+
+    private void createRandomBit(){
+        for(int i=0; i<height; i++) {
+            for (int j = 0; j < width; j++) {
+                this.lattice[i][j] += (char) Math.round(Math.random()) * R;
             }
         }
     }
@@ -119,6 +144,7 @@ public class LatticeGasAutomata {
         collide();
     }
 
+    //TODO: hay un bug aca. Sera que estoy manejando mal el mapeo HEX -> MATRIZ ?
     private void hop(){
         char[][] newLattice = new char[height][width];
 
@@ -145,15 +171,18 @@ public class LatticeGasAutomata {
                     newLattice[i][j-1] += lattice[i][j] & (D | R);
                 }
 
-                //D
+                //E
                 if(i+1<height && j-1>0){
-                    newLattice[i+1][j-1] += lattice[i][j] & (D | R);
+                    newLattice[i+1][j-1] += lattice[i][j] & (E | R);
                 }
 
-                //E
+                //F
                 if(i+1<height){
-                    newLattice[i+1][j] += lattice[i][j] & (E | R);
+                    newLattice[i+1][j] += lattice[i][j] & (F | R);
                 }
+
+                //S
+                newLattice[i][j] += lattice[i][j] & S;
 
             }
         }
