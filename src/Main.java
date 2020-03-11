@@ -24,9 +24,13 @@ public class Main {
         System.out.println("Estado inicial: -------------------");
         printLattice(latticeGasAutomata.getLattice(),width,height);
 
-
+        int lastParticleCount=latticeGasAutomata.countParticles();
         for(int i=1; i <= 100000; i++){
             latticeGasAutomata.update();
+
+            int newParticleCount = latticeGasAutomata.countParticles();
+
+            //System.out.println(newParticleCount);
         }
 
         System.out.println("Estado final: -------------------");
@@ -37,14 +41,18 @@ public class Main {
     }
 
     private static void printLattice(char[][] lattice, int width, int height){
+        int particleCount = 0;
         final String OFFSET = " ";
         for(int i=0; i<height; i++){
             StringBuilder sb = new StringBuilder(i%2 == 0 ? OFFSET : "");
             for(int j=0; j<width; j++){
-                sb.append(OFFSET).append(countParticles(lattice[i][j]));
+                int particles = countParticles(lattice[i][j]);
+                sb.append(OFFSET).append(particles);
+                particleCount += particles;
             }
             System.out.println(sb);
         }
+        System.out.println("Number of particles: "+particleCount);
     }
 
     private static int countParticles(char particles){

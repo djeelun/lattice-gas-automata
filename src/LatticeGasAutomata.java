@@ -151,35 +151,61 @@ public class LatticeGasAutomata {
         for(int i=0; i<height; i++) {
             for (int j = 0; j < width; j++) {
 
+                //horizontal movement does not depend on parity of row
                 //A
                 if(j+1<width){
                     newLattice[i][j+1] += lattice[i][j] & (A | R);
                 }
-
-                //B
-                if(i-1>0){
-                    newLattice[i-1][j] += lattice[i][j] & (B | R);
-                }
-
-                //C
-                if(i-1>0 && j-1>0){
-                    newLattice[i-1][j-1] += lattice[i][j] & (C | R);
-                }
-
                 //D
                 if(j-1>0){
                     newLattice[i][j-1] += lattice[i][j] & (D | R);
                 }
 
-                //E
-                if(i+1<height && j-1>0){
-                    newLattice[i+1][j-1] += lattice[i][j] & (E | R);
+                //vertical movement does depend on parity of row
+                if(i % 2 == 0){
+                    //C
+                    if(i-1>0){
+                        newLattice[i-1][j] += lattice[i][j] & (C | R);
+                    }
+
+                    //B
+                    if(i-1>0 && j+1<width){
+                        newLattice[i-1][j+1] += lattice[i][j] & (B | R);
+                    }
+
+
+                    //F
+                    if(i+1<height && j+1<width){
+                        newLattice[i+1][j+1] += lattice[i][j] & (F | R);
+                    }
+
+                    //E
+                    if(i+1<height){
+                        newLattice[i+1][j] += lattice[i][j] & (E | R);
+                    }
+                }else{
+                    //B
+                    if(i-1>0){
+                        newLattice[i-1][j] += lattice[i][j] & (B | R);
+                    }
+
+                    //C
+                    if(i-1>0 && j-1>0){
+                        newLattice[i-1][j-1] += lattice[i][j] & (C | R);
+                    }
+
+
+                    //E
+                    if(i+1<height && j-1>0){
+                        newLattice[i+1][j-1] += lattice[i][j] & (E | R);
+                    }
+
+                    //F
+                    if(i+1<height){
+                        newLattice[i+1][j] += lattice[i][j] & (F | R);
+                    }
                 }
 
-                //F
-                if(i+1<height){
-                    newLattice[i+1][j] += lattice[i][j] & (F | R);
-                }
 
                 //S
                 newLattice[i][j] += lattice[i][j] & S;
@@ -200,5 +226,29 @@ public class LatticeGasAutomata {
 
     public char[][] getLattice() {
         return lattice;
+    }
+
+    public int countParticles(){
+        int count = 0;
+        for(int i=0; i<height; i++) {
+            for (int j = 0; j < width; j++) {
+                count += countCellParticles(lattice[i][j]);
+            }
+        }
+        return count;
+    }
+
+    private int countCellParticles(char cell){
+        int value = 0;
+
+        value += (cell & A) != 0 ? 1 : 0;
+        value += (cell & B) != 0 ? 1 : 0;
+        value += (cell & C) != 0 ? 1 : 0;
+        value += (cell & D) != 0 ? 1 : 0;
+        value += (cell & E) != 0 ? 1 : 0;
+        value += (cell & F) != 0 ? 1 : 0;
+
+
+        return value;
     }
 }
