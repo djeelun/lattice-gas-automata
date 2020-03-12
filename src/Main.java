@@ -10,6 +10,10 @@ public class Main {
         Region wallRegion = new Region(width, height);
         //middle wall
         wallRegion.addRectangle(width/2, 0, width/2+1, height-1, false);
+
+        //hole in the wall
+        wallRegion.addRectangle(width/2, height/2-10, width/2 + 1, height/2+10, true);
+
         wallRegion.addRectangleBorders(0, 0, width-1, height-1, 2, false);
 
         LatticeGasAutomata latticeGasAutomata = new LatticeGasAutomata(width, height, spawnRegion.getRegion(), wallRegion.getRegion());

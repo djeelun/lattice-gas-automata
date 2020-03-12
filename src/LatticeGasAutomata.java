@@ -46,7 +46,7 @@ public class LatticeGasAutomata {
         if((value & S) != 0){
 
             value = (char)(invertVelocity((char)(value & A)) + invertVelocity((char)(value & B)) + invertVelocity((char)(value & C))
-                +  invertVelocity((char)(value & D)) +  invertVelocity((char)(value & E)) +  invertVelocity((char)(value & F)) + S);
+                +  invertVelocity((char)(value & D)) +  invertVelocity((char)(value & E)) +  invertVelocity((char)(value & F)) + S + (value & R));
 
         }else{
             switch (value){
@@ -99,15 +99,15 @@ public class LatticeGasAutomata {
         
         this.lattice = new char[height][width];
 
-        createWalls();
         fillWithParticles();
+        createWalls();
         createRandomBit();
     }
 
     private void createWalls(){
         for(int i=0; i<height; i++) {
             for (int j = 0; j < width; j++) {
-                this.lattice[i][j] = this.wallRegion[i][j] ? S : 0;
+                this.lattice[i][j] += this.wallRegion[i][j] ? S : 0;
             }
         }
     }
@@ -116,17 +116,18 @@ public class LatticeGasAutomata {
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
 
-                char value = 0;
 
                 if(this.spawnRegion[i][j] && !this.wallRegion[i][j]) {
+                    char value = 0;
 
                     if (Math.round(Math.random()) == 1) {
-                        value += (char) Math.pow(2, Math.round(Math.random() * 6));
+                        value += (char) Math.pow(2, Math.round(Math.random() * 5));
                     }
+
+                    lattice[i][j] = value;
                 }
 
 
-                lattice[i][j] = value;
             }
         }
     }
