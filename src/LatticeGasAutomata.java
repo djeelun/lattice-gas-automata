@@ -41,6 +41,8 @@ public class LatticeGasAutomata {
         return 0;
     }
 
+
+    //TODO: las colisiones son distintas en la teorica e incluye colisiones entre 4 particulas. Cambiar estas colisiones por las de la teorica.
     private char solveCollision(char value){
         //checks if it is solid
         if((value & S) != 0){
@@ -112,6 +114,8 @@ public class LatticeGasAutomata {
         }
     }
 
+
+    //TODO: generar tantas particulas como sea necesario.
     private void fillWithParticles(){
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
@@ -145,7 +149,6 @@ public class LatticeGasAutomata {
         collide();
     }
 
-    //TODO: hay un bug aca. Sera que estoy manejando mal el mapeo HEX -> MATRIZ ?
     private void hop(){
         char[][] newLattice = new char[height][width];
 
