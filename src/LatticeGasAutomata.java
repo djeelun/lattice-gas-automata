@@ -1,3 +1,9 @@
+import Exceptions.NotEnoughSpaceException;
+
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
 public class LatticeGasAutomata {
 
     /*
@@ -10,6 +16,8 @@ public class LatticeGasAutomata {
      */
     private char[][] lattice;
     private boolean[][] spawnRegion, wallRegion;
+
+    private List<Point> spawnPoints = new ArrayList<>();
 
     private int height;
     private int width;
@@ -91,7 +99,7 @@ public class LatticeGasAutomata {
     }
 
 
-    public LatticeGasAutomata(int width, int height, boolean[][] spawnRegion, boolean[][] wallRegion){
+    public LatticeGasAutomata(int width, int height, boolean[][] spawnRegion, boolean[][] wallRegion, int particlesAmount) throws NotEnoughSpaceException{
         this.width = width;
         this.height = height;
         this.spawnRegion = spawnRegion;
@@ -99,7 +107,10 @@ public class LatticeGasAutomata {
         
         this.lattice = new char[height][width];
 
-        fillWithParticles();
+        calculateSpawnPoints();
+        if(spawnPoints.size() * 6 < particlesAmount)
+            throw new NotEnoughSpaceException("There is no space to generate the particles");
+        fillWithParticles(particlesAmount);
         createWalls();
         createRandomBit();
     }
@@ -112,23 +123,51 @@ public class LatticeGasAutomata {
         }
     }
 
-    private void fillWithParticles(){
+    private void calculateSpawnPoints() {
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
-
-
                 if(this.spawnRegion[i][j] && !this.wallRegion[i][j]) {
-                    char value = 0;
-
-                    if (Math.round(Math.random()) == 1) {
-                        value += (char) Math.pow(2, Math.round(Math.random() * 5));
-                    }
-
-                    lattice[i][j] = value;
+                    spawnPoints.add(new Point(i,j));
                 }
-
-
             }
+        }
+    }
+
+    private List<Character> getAvailableSpaces(Point p) {
+        List<Character> availableSpaces = new ArrayList<>();
+        availableSpaces.add(A);
+        availableSpaces.add(B);
+        availableSpaces.add(C);
+        availableSpaces.add(D);
+        availableSpaces.add(E);
+        availableSpaces.add(F);
+
+        Iterator<Character> iterator = availableSpaces.iterator();
+        while(iterator.hasNext()){
+            char value = lattice[p.x][p.y];
+            if((value & iterator.next()) != 0){
+                iterator.remove();
+            }
+        }
+
+        return availableSpaces;
+    }
+
+    private void addParticle(Point p) {
+        List<Character> availableSpaces = getAvailableSpaces(p);
+
+        int index = (int) Math.round(Math.random() * (availableSpaces.size() - 1));
+        lattice[p.x][p.y] += availableSpaces.get(index);
+
+        if(availableSpaces.size() <= 1)
+            spawnPoints.remove(p);
+    }
+
+    private void fillWithParticles(int particlesAmount) {
+        while(particlesAmount > 0) {
+            int index = (int) Math.round(Math.random() * (spawnPoints.size() - 1));
+            addParticle(spawnPoints.get(index));
+            particlesAmount--;
         }
     }
 
