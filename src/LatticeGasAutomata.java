@@ -91,6 +91,26 @@ public class LatticeGasAutomata {
                 case B + D + F + R:
                     value = A + C + E + R;
                     break;
+
+                //4 particle collision
+                case C + B + E + F:
+                    value = C + D + A + F;
+                    break;
+                case C + B + E + F + R:
+                    value = B + A + D + E;
+                    break;
+                case C + D + A + F:
+                    value = E + B + D + A;
+                    break;
+                case C + D + A + F + R:
+                    value = E + B + C + F;
+                    break;
+                case D + E + B + A:
+                    value = C + F + D + A;
+                    break;
+                case D + E + B + A + R:
+                    value = C + F + B + E;
+                    break;
             }
         }
 
@@ -184,7 +204,6 @@ public class LatticeGasAutomata {
         collide();
     }
 
-    //TODO: hay un bug aca. Sera que estoy manejando mal el mapeo HEX -> MATRIZ ?
     private void hop(){
         char[][] newLattice = new char[height][width];
 
@@ -194,61 +213,61 @@ public class LatticeGasAutomata {
                 //horizontal movement does not depend on parity of row
                 //A
                 if(j+1<width){
-                    newLattice[i][j+1] += lattice[i][j] & (A | R);
+                    newLattice[i][j+1] += lattice[i][j] & A;
                 }
                 //D
                 if(j-1>0){
-                    newLattice[i][j-1] += lattice[i][j] & (D | R);
+                    newLattice[i][j-1] += lattice[i][j] & D;
                 }
 
                 //vertical movement does depend on parity of row
                 if(i % 2 == 0){
                     //C
                     if(i-1>0){
-                        newLattice[i-1][j] += lattice[i][j] & (C | R);
+                        newLattice[i-1][j] += lattice[i][j] & C;
                     }
 
                     //B
                     if(i-1>0 && j+1<width){
-                        newLattice[i-1][j+1] += lattice[i][j] & (B | R);
+                        newLattice[i-1][j+1] += lattice[i][j] & B;
                     }
 
 
                     //F
                     if(i+1<height && j+1<width){
-                        newLattice[i+1][j+1] += lattice[i][j] & (F | R);
+                        newLattice[i+1][j+1] += lattice[i][j] & F;
                     }
 
                     //E
                     if(i+1<height){
-                        newLattice[i+1][j] += lattice[i][j] & (E | R);
+                        newLattice[i+1][j] += lattice[i][j] & E;
                     }
                 }else{
                     //B
                     if(i-1>0){
-                        newLattice[i-1][j] += lattice[i][j] & (B | R);
+                        newLattice[i-1][j] += lattice[i][j] & B;
                     }
 
                     //C
                     if(i-1>0 && j-1>0){
-                        newLattice[i-1][j-1] += lattice[i][j] & (C | R);
+                        newLattice[i-1][j-1] += lattice[i][j] & C;
                     }
 
 
                     //E
                     if(i+1<height && j-1>0){
-                        newLattice[i+1][j-1] += lattice[i][j] & (E | R);
+                        newLattice[i+1][j-1] += lattice[i][j] & E;
                     }
 
                     //F
                     if(i+1<height){
-                        newLattice[i+1][j] += lattice[i][j] & (F | R);
+                        newLattice[i+1][j] += lattice[i][j] & F;
                     }
                 }
 
 
                 //S
-                newLattice[i][j] += lattice[i][j] & S;
+                newLattice[i][j] += lattice[i][j] & (S | R);
 
             }
         }
