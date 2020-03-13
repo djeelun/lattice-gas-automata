@@ -41,8 +41,6 @@ public class LatticeGasAutomata {
         return 0;
     }
 
-
-    //TODO: las colisiones son distintas en la teorica e incluye colisiones entre 4 particulas. Cambiar estas colisiones por las de la teorica.
     private char solveCollision(char value){
         //checks if it is solid
         if((value & S) != 0){
@@ -84,6 +82,26 @@ public class LatticeGasAutomata {
                     break;
                 case B + D + F + R:
                     value = A + C + E + R;
+                    break;
+
+                //4 particle collision
+                case C + B + E + F:
+                    value = C + D + A + F;
+                    break;
+                case C + B + E + F + R:
+                    value = B + A + D + E;
+                    break;
+                case C + D + A + F:
+                    value = E + B + D + A;
+                    break;
+                case C + D + A + F + R:
+                    value = E + B + C + F;
+                    break;
+                case D + E + B + A:
+                    value = C + F + D + A;
+                    break;
+                case D + E + B + A + R:
+                    value = C + F + B + E;
                     break;
             }
         }
