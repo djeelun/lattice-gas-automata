@@ -1,6 +1,7 @@
 import Exceptions.NotEnoughSpaceException;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
 
@@ -287,27 +288,38 @@ public class LatticeGasAutomata {
         return lattice;
     }
 
-    public int countParticles(){
-        int count = 0;
-        for(int i=0; i<height; i++) {
-            for (int j = 0; j < width; j++) {
-                count += countCellParticles(lattice[i][j]);
+    public Point2D[][] getMeanVelocities(int chunkSize){
+        Point2D[][] result = new Vector[][];
+        for(int i=0; i<height; i++){
+            for(int j=0; j<width; j++){
+                result[i][j] = calculateChunkMeanVelocity(i, j, chunkSize);
             }
         }
-        return count;
+        return result;
     }
 
-    private int countCellParticles(char cell){
-        int value = 0;
+    private Point2D calculateChunkMeanVelocity(int coorI, int coorJ, int chunkSize){
+        int offsetI = chunkSize*coorI, offsetJ = chunkSize*coorJ;
 
-        value += (cell & A) != 0 ? 1 : 0;
-        value += (cell & B) != 0 ? 1 : 0;
-        value += (cell & C) != 0 ? 1 : 0;
-        value += (cell & D) != 0 ? 1 : 0;
-        value += (cell & E) != 0 ? 1 : 0;
-        value += (cell & F) != 0 ? 1 : 0;
+        int versorA = 0, versorB = 0, versorC = 0;
+        for(int i=offsetI; i<offsetI+chunkSize; i++){
+            for(int j=offsetJ; j<offsetJ + chunkSize/2; j++){
+                int val = lattice[i][j];
 
+                versorA += val & A;
+                versorA -= val & D;
 
-        return value;
+                versorB += val & B;
+                versorB -= val & E;
+
+                versorC += val & C;
+                versorC -= val & F;
+            }
+        }
+
+        double x = versorA + versorB*Math.sqrt(3)/2 - versorC*Math.sqrt(3)/2,
+                y = versorB*Math.sqrt(3)/4 - versorC*Math.sqrt(3)/4;
+
+        return new Point2D(x, y);
     }
 }
