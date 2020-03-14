@@ -288,22 +288,22 @@ public class LatticeGasAutomata {
         return lattice;
     }
 
-    public Point2D[][] getMeanVelocities(int chunkSize){
-        Point2D[][] result = new Vector[][];
-        for(int i=0; i<height; i++){
-            for(int j=0; j<width; j++){
+    public Point2D.Float[][] getMeanVelocities(int chunkSize){
+        Point2D.Float[][] result = new Point2D.Float[height/chunkSize][width/chunkSize];
+        for(int i=0; i<height/chunkSize; i++){
+            for(int j=0; j<width/chunkSize; j++){
                 result[i][j] = calculateChunkMeanVelocity(i, j, chunkSize);
             }
         }
         return result;
     }
 
-    private Point2D calculateChunkMeanVelocity(int coorI, int coorJ, int chunkSize){
+    private Point2D.Float calculateChunkMeanVelocity(int coorI, int coorJ, int chunkSize){
         int offsetI = chunkSize*coorI, offsetJ = chunkSize*coorJ;
 
         int versorA = 0, versorB = 0, versorC = 0;
-        for(int i=offsetI; i<offsetI+chunkSize; i++){
-            for(int j=offsetJ; j<offsetJ + chunkSize/2; j++){
+        for(int i=offsetI; i<offsetI+chunkSize && i<height; i++){
+            for(int j=offsetJ; j<offsetJ + chunkSize/2 && j<width; j++){
                 int val = lattice[i][j];
 
                 versorA += val & A;
@@ -320,6 +320,29 @@ public class LatticeGasAutomata {
         double x = versorA + versorB*Math.sqrt(3)/2 - versorC*Math.sqrt(3)/2,
                 y = versorB*Math.sqrt(3)/4 - versorC*Math.sqrt(3)/4;
 
-        return new Point2D(x, y);
+        return new Point2D.Float((float)x, (float)y);
+    }
+
+    public int countParticlesInsideRegion(boolean[][] region){
+        int sum=0;
+        for(int i=0 ; i<height; i++){
+            for(int j=0 ; j<width; j++){
+                if(region[i][j]){
+                    sum+=countParticles(lattice[i][j]);
+                }
+            }
+        }
+        return sum;
+    }
+
+    private int countParticles(int cell){
+        int value=0;
+        value += (cell & A) != 0 ? 1 : 0;
+        value += (cell & B) != 0 ? 1 : 0;
+        value += (cell & C) != 0 ? 1 : 0;
+        value += (cell & D) != 0 ? 1 : 0;
+        value += (cell & E) != 0 ? 1 : 0;
+        value += (cell & F) != 0 ? 1 : 0;
+        return value;
     }
 }
