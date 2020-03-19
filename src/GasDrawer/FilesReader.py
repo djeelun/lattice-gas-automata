@@ -16,9 +16,9 @@ class FilesReader:
 
     maxVel = 0
 
-    def __init__(self):
-        self.dynamicFile = open("../../dynamicFile", "r")
-        self.staticFile = open("../../staticFile", "r")
+    def __init__(self, path):
+        self.dynamicFile = open(path + "/dynamicFile", "r")
+        self.staticFile = open(path + "/staticFile", "r")
         self.dynamicLines = self.dynamicFile.readlines()
 
     def readMapSize(self, line):

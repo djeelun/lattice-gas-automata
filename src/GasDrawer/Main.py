@@ -5,14 +5,18 @@ import GasDrawer
 import time
 import FilesReader
 
-reader = FilesReader.FilesReader()
+paths = ["../../particles2000", "../../particles3000", "../../particles5000"]
+titles = ["N = 2000", "N = 3000", "N = 5000"]
 
-chunkSize, map = reader.readStatic()
+for path in paths:
+    reader = FilesReader.FilesReader(path)
 
-drawer = GasDrawer.GasDrawer(map, chunkSize)
-velocities, maxVel = reader.readNextTime()
-drawer.drawChunkArrows(velocities, maxVel)
+    chunkSize, map = reader.readStatic()
 
-while True:
+    drawer = GasDrawer.GasDrawer(map, chunkSize, "N = " + filter(str.isdigit, path))
+
     velocities, maxVel = reader.readNextTime()
-    drawer.update(velocities, maxVel)
+
+    while len(velocities) > 0:
+        drawer.update(velocities, maxVel)
+        velocities, maxVel = reader.readNextTime()

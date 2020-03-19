@@ -19,12 +19,14 @@ class GasDrawer:
     map = None
     chunkSize = 0
     SCALE_DISPLAY_SIZE = 150
+    title = None
 
-    def __init__(self, map, chunkSize):
+    def __init__(self, map, chunkSize, title):
         pygame.init()
         self.chunkSize = chunkSize
         self.map = map
         self.calculateSizes()
+        self.title = title
 
     def calculateSizes(self):
         width = self.xResolution
@@ -57,6 +59,8 @@ class GasDrawer:
 
     def drawWalls(self):
         self.DISPLAY.fill(self.BACKGROUND)
+        w, h = pygame.display.get_surface().get_size()
+        self.writeText((w - self.SCALE_DISPLAY_SIZE + 3) / self.boxSize, 0, self.title, 25, self.BLACK)
         self.drawScale()
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
