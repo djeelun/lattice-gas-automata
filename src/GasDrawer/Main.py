@@ -4,18 +4,11 @@ import random
 import GasDrawer
 import time
 import FilesReader
+from SimulationRunner import SimulationRunner
 
 paths = ["../../particles2000", "../../particles3000", "../../particles5000"]
 
-for path in paths:
-    reader = FilesReader.FilesReader(path)
+simulationRunner = SimulationRunner()
 
-    chunkSize, map = reader.readStatic()
-
-    drawer = GasDrawer.GasDrawer(map, chunkSize, "N = " + filter(str.isdigit, path))
-
-    velocities, maxVel = reader.readNextTime()
-
-    while len(velocities) > 0:
-        drawer.update(velocities, maxVel)
-        velocities, maxVel = reader.readNextTime()
+# simulationRunner.runSingleSimulation(paths[0])
+simulationRunner.runMultipleSimulations(paths)

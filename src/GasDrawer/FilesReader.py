@@ -58,7 +58,7 @@ class FilesReader:
 
         self.map = [[int(num) for num in line.split()] for line in lines[lineNumber::]]
 
-        return self.chunkSize, self.map
+        return self.chunkSize, self.map, self.particles
 
     def readVelocity(self, line):
         velocity = [0, 0]
