@@ -20,6 +20,7 @@ class GasDrawer:
     boxSize = 0
     map = None
     chunkSize = 0
+    SCALE_DISPLAY_SIZE = 150
 
     def __init__(self, map, chunkSize):
         pygame.init()
@@ -31,11 +32,33 @@ class GasDrawer:
         width = self.xResolution
         height = self.yResolution
         self.boxSize = min(width / len(self.map[0]), height / len(self.map))
-        self.DISPLAY = pygame.display.set_mode((int(math.ceil(self.boxSize * len(self.map[0]))), int(math.ceil(self.boxSize * len(self.map)))), 0, 32)
+        self.DISPLAY = pygame.display.set_mode((int(math.ceil((self.boxSize * len(self.map[0])) + self.SCALE_DISPLAY_SIZE)), int(math.ceil(self.boxSize * len(self.map)))), 0, 32)
         self.DISPLAY.fill(self.BACKGROUND)
+
+    def drawScale(self):
+        array = np.arange(0.0, 1.0, 0.02)
+        scaleSize = self.boxSize * 2
+        w, h = pygame.display.get_surface().get_size()
+        x = (w - self.SCALE_DISPLAY_SIZE + 30)/self.boxSize
+        y = ((h / self.boxSize) / 2) - len(array)
+
+        font = pygame.font.SysFont("Comic Sans MS", 20)
+        label = font.render("Fast", 1, self.getColor(1.0))
+        self.DISPLAY.blit(label, ((x + 3) * self.boxSize, (y - 2) * self.boxSize))
+
+        for scale in array:
+            color = self.getColor(1-scale)
+            self.drawSquare(x, y, color, 2)
+            y+=2
+
+        # apply it to text on a label
+        label = font.render("Slow", 1, self.getColor(0.0))
+        # put the label object on the screen at point x=100, y=100
+        self.DISPLAY.blit(label, ((x + 3) * self.boxSize, (y - 6) * self.boxSize))
 
     def drawWalls(self):
         self.DISPLAY.fill(self.BACKGROUND)
+        self.drawScale()
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
                 if self.map[y][x] == 1:
