@@ -13,7 +13,7 @@ class GasDrawer:
     DISPLAY = 0
     xResolution = 1600
     yResolution = 900
-    WHITE = (255, 255, 255)
+    BACKGROUND = (108, 181, 245)
     BLACK = (0, 0, 0)
     BLUE = (0, 0, 255)
     RED = (255, 0, 0)
@@ -32,10 +32,10 @@ class GasDrawer:
         height = self.yResolution
         self.boxSize = min(width / len(self.map[0]), height / len(self.map))
         self.DISPLAY = pygame.display.set_mode((int(math.ceil(self.boxSize * len(self.map[0]))), int(math.ceil(self.boxSize * len(self.map)))), 0, 32)
-        self.DISPLAY.fill(self.WHITE)
+        self.DISPLAY.fill(self.BACKGROUND)
 
     def drawWalls(self):
-        self.DISPLAY.fill(self.WHITE)
+        self.DISPLAY.fill(self.BACKGROUND)
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
                 if self.map[y][x] == 1:
@@ -45,7 +45,7 @@ class GasDrawer:
         pygame.draw.rect(self.DISPLAY, color, (x * self.boxSize, y * self.boxSize, self.boxSize * boxAmount, self.boxSize * boxAmount))
 
     def clearChunk(self, x, y):
-        pygame.draw.rect(self.DISPLAY, self.WHITE, (x * self.chunkSize * self.boxSize, y * self.chunkSize * self.boxSize, self.chunkSize * self.boxSize, self.chunkSize * self.boxSize))
+        pygame.draw.rect(self.DISPLAY, self.BACKGROUND, (x * self.chunkSize * self.boxSize, y * self.chunkSize * self.boxSize, self.chunkSize * self.boxSize, self.chunkSize * self.boxSize))
 
     def drawChunkArrows(self, velocities, maxVel):
         if(len(velocities) > 0):
@@ -66,11 +66,10 @@ class GasDrawer:
 
 
     def getColor(self, scale):
-        plt.rc('image', cmap='gray')
-        colorAux = plt.cm.jet(scale)
+        colorAux = plt.cm.YlOrRd(scale)
         return [colorAux[0] * 255, colorAux[1]*255, colorAux[2]*255]
 
-    def drawArrow(self, x, y, rotation = 0, sizeFactor = 1):
+    def drawArrow(self, x, y, rotation = 0, scale = 1):
         newBox = self.boxSize * self.chunkSize
         lineBold = 0.001 * newBox / 2
         lineLength = (0.8 * newBox / 2)
@@ -80,7 +79,7 @@ class GasDrawer:
         rotationRadians = math.pi * rotation / 180
         sin = math.sin(rotationRadians)
         cos = math.cos(rotationRadians)
-        color = self.getColor(sizeFactor)
+        color = self.getColor(scale)
         pygame.gfxdraw.aapolygon(self.DISPLAY, ((xCord - (lineBold * sin), yCord - (lineBold * cos)),
                                                 (xCord + (lineBold * sin), yCord + (lineBold * cos)),
                                                 (xCord + (lineLength * cos) + (lineBold * sin), yCord - (lineLength * sin) + (lineBold * cos)),
