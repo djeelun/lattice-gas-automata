@@ -12,14 +12,14 @@ public class TwoContainersSimulation {
         leftContainer.addRectangle(0, 0, width/2-1, height-1, false);
 
         Region rightContainer = new Region(width, height);
-        rightContainer.addRectangle(width/2, 0, width-1, height-1, false);
+        rightContainer.addRectangle(width/2+1, 0, width-1, height-1, false);
 
         Region wallRegion = new Region(width, height);
         //middle wall
-        wallRegion.addRectangle(width/2, 0, width/2+1, height-1, false);
+        wallRegion.addRectangle(width/2, 0, width/2, height-1, false);
 
         //hole in the wall
-        wallRegion.addRectangle(width/2, height/2-height/8, width/2 + 1, height/2+height/8, true);
+        wallRegion.addRectangle(width/2-1, height/2-height/8, width/2 + 1, height/2+height/8, true);
 
         wallRegion.addRectangleBorders(0, 0, width-1, height-1, 2, false);
 

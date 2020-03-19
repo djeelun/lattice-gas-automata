@@ -318,7 +318,7 @@ public class LatticeGasAutomata {
         }
 
         double x = versorA + versorB*Math.sqrt(3)/2 - versorC*Math.sqrt(3)/2,
-                y = versorB*Math.sqrt(3)/4 - versorC*Math.sqrt(3)/4;
+                y = versorB*Math.sqrt(3)/2 + versorC*Math.sqrt(3)/2;
 
         return new Point2D.Float((float)x, (float)y);
     }
