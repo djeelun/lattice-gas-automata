@@ -6,7 +6,6 @@ import time
 import FilesReader
 
 paths = ["../../particles2000", "../../particles3000", "../../particles5000"]
-titles = ["N = 2000", "N = 3000", "N = 5000"]
 
 for path in paths:
     reader = FilesReader.FilesReader(path)
