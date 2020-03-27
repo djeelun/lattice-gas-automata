@@ -1,5 +1,4 @@
 # lattice-gas-automata
-Gas simulation based on the uploaded pdf.
+FHP gas simulation based on the uploaded pdf.
 
-For plotting and animating the simulation results use:
-https://github.com/migdiluca/GasDrawer
+The project contains the simulator and a python program that runs the animation and graphs the results.
