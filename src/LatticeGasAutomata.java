@@ -319,8 +319,13 @@ public class LatticeGasAutomata {
             }
         }
 
-        double x = (versorA + versorB*Math.sqrt(3)/2 - versorC*Math.sqrt(3)/2)/numberOfParticles,
-                y = (versorB*Math.sqrt(3)/2 + versorC*Math.sqrt(3)/2)/numberOfParticles;
+        double x = (versorA + versorB/2 - versorC/2),
+                y = (versorB*Math.sqrt(3)/2 + versorC*Math.sqrt(3)/2);
+        
+        if(numberOfParticles != 0) {
+        	x /= numberOfParticles;
+        	y /= numberOfParticles;
+        }
 
         return new Point2D.Float((float)x, (float)y);
     }
