@@ -8,7 +8,7 @@ def readFromFiles(folder):
     rightContainer = []
 
     for i in range(NUMBER_OF_FILES):
-        file = open("./" + folder + "/particleDistributionFile"+str(i), "r")
+        file = open("../../" + folder + "/particleDistributionFile"+str(i), "r")
 
         lines = file.readlines()
 

@@ -1,5 +1,6 @@
 from FilesReader import FilesReader
 from GasDrawer import GasDrawer
+import time
 
 
 class SimulationRunner:
@@ -13,6 +14,8 @@ class SimulationRunner:
             drawer = GasDrawer(map, chunkSize, "N = " + str(particles))
 
             velocities, maxVel = reader.readNextTime()
+            drawer.firstUpdate()
+            time.sleep(4)
 
             while len(velocities) > 0:
                 drawer.update(velocities, maxVel)
@@ -26,6 +29,8 @@ class SimulationRunner:
         drawer = GasDrawer(map, chunkSize, "N = " + str(particles))
 
         velocities, maxVel = reader.readNextTime()
+        drawer.firstUpdate()
+        time.sleep(4)
 
         while len(velocities) > 0:
             drawer.update(velocities, maxVel)

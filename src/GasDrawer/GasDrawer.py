@@ -4,18 +4,24 @@ from pygame.locals import *
 import numpy as np
 import random
 import math
+import time
 import pygame.gfxdraw
 from matplotlib import pyplot as plt
 from matplotlib import colors
 from matplotlib import cm as cmx
 
+import os
+x = 100
+y = 0
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
+
 
 class GasDrawer:
     DISPLAY = 0
-    xResolution = 1600
-    yResolution = 900
+    xResolution = 1440
+    yResolution = 1000
     BACKGROUND = (108, 181, 245)
-    BLACK = (0, 0, 0)
+    BLACK = (40, 40, 40)
     boxSize = 0
     map = None
     chunkSize = 0
@@ -27,15 +33,14 @@ class GasDrawer:
         self.chunkSize = chunkSize
         self.map = map
         self.calculateSizes()
+        self.SCALE_DISPLAY_SIZE = self.xResolution - ((len(map[0]) + 2) * self.boxSize)
         self.title = title
 
     def calculateSizes(self):
         width = self.xResolution
         height = self.yResolution
         self.boxSize = min(width / len(self.map[0]), height / len(self.map))
-        self.DISPLAY = pygame.display.set_mode((int(
-            math.ceil((self.boxSize * len(self.map[0])) + self.SCALE_DISPLAY_SIZE)),
-                                                int(math.ceil(self.boxSize * len(self.map)))), 0, 32)
+        self.DISPLAY = pygame.display.set_mode((self.xResolution,self.yResolution), pygame.FULLSCREEN, 32)
         self.DISPLAY.fill(self.BACKGROUND)
 
     def drawScale(self):
@@ -46,14 +51,14 @@ class GasDrawer:
 
         boxScale = 2
 
-        self.writeText(x + 3, y - 2, "Fast", 20, self.getColor(1.0))
+        self.writeText(x + 3, y - 2, "Rapido", 20, self.getColor(1.0))
 
         for scale in array:
             color = self.getColor(1 - scale)
             self.drawSquare(x, y, color, boxScale)
             y += boxScale
 
-        self.writeText(x + 3, y - 5, "Slow", 20, self.getColor(0.0))
+        self.writeText(x + 3, y - 5, "Lento", 20, self.getColor(0.0))
 
     def writeText(self, x, y, text, size, color):
         font = pygame.font.SysFont("Arial", size)
@@ -88,7 +93,7 @@ class GasDrawer:
                     Vx = velArray[0]
                     Vy = velArray[1]
                     if (Vx != 0 or Vy != 0):
-                        self.drawArrow(x, y, int(math.atan2(Vy, Vx) / math.pi * 180),
+                        self.drawArrow(x, y, int(math.atan2(Vy, Vx) * 180 / math.pi),
                                        (((Vx ** 2) + (Vy ** 2)) / maxVel))
 
     def cleanEmptySquares(self):
@@ -142,4 +147,11 @@ class GasDrawer:
             if event.type == QUIT:
                 pygame.quit()
         self.drawChunkArrows(velocities, maxVel)
+        pygame.display.update()
+
+    def firstUpdate(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+        self.drawWalls()
         pygame.display.update()
