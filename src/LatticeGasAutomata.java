@@ -301,11 +301,13 @@ public class LatticeGasAutomata {
     private Point2D.Float calculateChunkMeanVelocity(int coorI, int coorJ, int chunkSize){
         int offsetI = chunkSize*coorI, offsetJ = chunkSize*coorJ;
 
+        int numberOfParticles = 0;
         int versorA = 0, versorB = 0, versorC = 0;
         for(int i=offsetI; i<offsetI+chunkSize && i<height; i++){
             for(int j=offsetJ; j<offsetJ + chunkSize/2 && j<width; j++){
                 int val = lattice[i][j];
-
+                numberOfParticles += countParticles(val);
+                
                 versorA += val & A;
                 versorA -= val & D;
 
@@ -317,8 +319,8 @@ public class LatticeGasAutomata {
             }
         }
 
-        double x = versorA + versorB*Math.sqrt(3)/2 - versorC*Math.sqrt(3)/2,
-                y = versorB*Math.sqrt(3)/2 + versorC*Math.sqrt(3)/2;
+        double x = (versorA + versorB*Math.sqrt(3)/2 - versorC*Math.sqrt(3)/2)/numberOfParticles,
+                y = (versorB*Math.sqrt(3)/2 + versorC*Math.sqrt(3)/2)/numberOfParticles;
 
         return new Point2D.Float((float)x, (float)y);
     }
