@@ -8,7 +8,7 @@ def readFromFiles(folder):
     rightContainer = []
 
     for i in range(NUMBER_OF_FILES):
-        file = open("../../" + folder + "/particleDistributionFile"+str(i), "r")
+        file = open("../../" + folder + "/distribution"+str(i+1), "r")
 
         lines = file.readlines()
 
@@ -75,10 +75,40 @@ def plotDataset(folder):
     plt.xlabel('Numero de iteraciones')
     plt.ylabel('Numero de particulas')
 
+def readEquilibrium(folder):
+    ratios = [];
+
+    for i in range(NUMBER_OF_FILES):
+        file = open("../../" + folder + "/equilibrium" + str(i+1), "r")
+        print(file)
+        lines = file.readLines()
+
+        newRatios = [];
+        for lineNumber in range(len(lines)):
+            if(lines[lineNumber][0] != "#"):
+                values = lines[lineNumber].split(" ")
+                values[0] = values[0].split('\n')[0]
+                newRatios.append(values[0]);
+
+        ratios.append(newRatios)
+    return ratios
+
+
+def plotEquilibrium(folder):
+    plt.figure()
+
+    ratios = calculateMeanAndStd(changeArrayOfArraysOrder(readEquilibrium(folder)))
+
+    ERROR_BAR_STEP = 10
+    plt.errorbar(np.arange(0, len(ratios[0]), ERROR_BAR_STEP),
+                 [v for i, v in enumerate(ratios[0]) if i % ERROR_BAR_STEP == 0],
+                 yerr=[v for i, v in enumerate(ratios[1]) if i % ERROR_BAR_STEP == 0],
+                 elinewidth=0.8)
+
+
+    plt.xlabel('Numero de particulas')
+    plt.ylabel('Numero de iteraciones')
 
 def runPlotter():
-    plotDataset('particles2000')
-    plotDataset('particles3000')
-    plotDataset('particles5000')
-
+    plotEquilibrium('results')
     plt.show()
