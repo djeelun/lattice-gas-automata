@@ -1,9 +1,10 @@
-import Exceptions.NotEnoughSpaceException;
-
+package simulations;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
+
+import exceptions.NotEnoughSpaceException;
 
 public class LatticeGasAutomata {
 

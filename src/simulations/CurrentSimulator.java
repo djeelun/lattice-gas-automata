@@ -1,8 +1,9 @@
+package simulations;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import Exceptions.NotEnoughSpaceException;
+import exceptions.NotEnoughSpaceException;
 
 public class CurrentSimulator {
 	private int height, width;

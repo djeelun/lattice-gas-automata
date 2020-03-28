@@ -1,3 +1,4 @@
+package simulations;
 public class Region {
     private boolean[][] region;
     private int width, height;
