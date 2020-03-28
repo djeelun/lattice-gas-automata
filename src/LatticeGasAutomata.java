@@ -80,7 +80,7 @@ public class LatticeGasAutomata {
                     break;
 
                 //3 particle collision
-                case A+C+E:
+                /*case A+C+E:
                     value = B + D + F;
                     break;
                 case B + D + F:
@@ -91,8 +91,16 @@ public class LatticeGasAutomata {
                     break;
                 case B + D + F + R:
                     value = A + C + E + R;
-                    break;
+                    break;*/
+                    
+                case C + A + E:
+                	value = D + B + F;
+                	break;
+                case D + B + F:
+                	value = C + A + E;
+            		break;
 
+         
                 //4 particle collision
                 case C + B + E + F:
                     value = C + D + A + F;
@@ -335,6 +343,7 @@ public class LatticeGasAutomata {
         for(int i=0 ; i<height; i++){
             for(int j=0 ; j<width; j++){
                 if(region[i][j]){
+                	
                     sum+=countParticles(lattice[i][j]);
                 }
             }
