@@ -8,29 +8,48 @@ import exceptions.NotEnoughSpaceException;
 public class CurrentSimulator {
 	private int height, width;
 	
-	public CurrentSimulator(int height, int width, char[][] particles, int numberOfIterations,
+	public CurrentSimulator(int height, int width, int numberOfIterations,
             String staticFile, String dynamicFile, int chunkSize) throws IOException, NotEnoughSpaceException {
 
 		this.height = height;
 		this.width = width;
+
+		char[][] particles = new char[height][width];
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
+				if(i > 4 && i < (height / 2 - 4) && j == 205) {
+					particles[i][j] = LatticeGasAutomata.A;
+				}else {
+					particles[i][j] = 0;
+				}
+			}
+		}
 		
 		Region wallRegion = new Region(width, height);
+
+		int halfHeight = height/2;
 		wallRegion.addRectangle(0, 0, width-1, 2, false);
-		wallRegion.addRectangle(0, height-3, width-1, height-1, false);
+		wallRegion.addRectangle(30, halfHeight-3, width-121, halfHeight-1, false);
 		
-		wallRegion.addRectangle(20, 0, 22, height/2+1, false);
+		wallRegion.addRectangle(20, 0, 22, halfHeight/2+1, false);
 		
-		wallRegion.addRectangle(40, height/2+1, 42, height-1, false);
+		wallRegion.addRectangle(40, halfHeight/2+1, 42, halfHeight-1, false);
 
 		
-		wallRegion.addRectangle(70, 0, 72, height/2+1, false);
+		wallRegion.addRectangle(70, 0, 72, halfHeight/2+1, false);
 		
-		wallRegion.addRectangle(100, height/2+1, 102, height-1, false);
+		wallRegion.addRectangle(100, halfHeight/2+1, 102, halfHeight-1, false);
 
 
-		wallRegion.addRectangle(150, 0, 152, height/2+1, false);
+		wallRegion.addRectangle(150, 0, 152, halfHeight/2+1, false);
 		
-		wallRegion.addRectangle(200, height/2+1, 202, height-1, false);
+		wallRegion.addRectangle(200, halfHeight/2+1, 202, halfHeight-1, false);
+
+		wallRegion.addRectangle(width-3, 0, width - 1, height - 1, false);
+
+		wallRegion.addRectangle(0, height - 3, width - 1, height - 1, false);
+
+		wallRegion.addRectangle(0, 0, 2, height - 1, false);
 
 		
 		Region currentRegion = new Region(width, height);

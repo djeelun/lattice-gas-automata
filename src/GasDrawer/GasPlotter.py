@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-NUMBER_OF_FILES = 10
+NUMBER_OF_FILES = 20
 
 def readFromFiles(folder):
     leftContainer = []
@@ -62,19 +62,18 @@ def plotDataset(folder):
     rightContainerValues = calculateMeanAndStd(changeArrayOfArraysOrder(tmpRightContainer))
 
 
-    ERROR_BAR_STEP = 10
+    ERROR_BAR_STEP = 15
     plt.errorbar(np.arange(0, len(leftContainerValues[0]), ERROR_BAR_STEP),
                  [v for i, v in enumerate(leftContainerValues[0]) if i % ERROR_BAR_STEP == 0],
                  yerr=[v for i, v in enumerate(leftContainerValues[1]) if i % ERROR_BAR_STEP == 0],
-                 elinewidth=0.8, label="Left container")
+                 elinewidth=0.5, label="Contenedor izquierdo")
     plt.errorbar(np.arange(0, len(rightContainerValues[0]), ERROR_BAR_STEP),
                  [v for i, v in enumerate(rightContainerValues[0]) if i % ERROR_BAR_STEP == 0],
                  yerr=[v for i, v in enumerate(rightContainerValues[1]) if i % ERROR_BAR_STEP == 0],
-                 elinewidth=0.8, label="Right container")
+                 elinewidth=0.5, label="Contenedor derecho")
 
-    plt.xlabel('Number of iterations')
-    plt.ylabel('Number of particles')
-    plt.title("Number of particles in each container")
+    plt.xlabel('Numero de iteraciones')
+    plt.ylabel('Numero de particulas')
 
 
 def runPlotter():

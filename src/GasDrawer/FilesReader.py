@@ -88,6 +88,8 @@ class FilesReader:
             while line[0] != '#' and endNumber < len(lines) - 1:
                 endNumber += 1
                 line = lines[endNumber]
-            chunk = [[self.readVelocity(velocity) for velocity in line.split()] for num in line.split() for line in lines[self.dynamicLineNumber:endNumber]]
+
+            chunk = [[self.readVelocity(velocity) for velocity in line.split()] for line in lines[self.dynamicLineNumber:endNumber]]
+
             self.dynamicLineNumber = endNumber
             return chunk, self.maxVel

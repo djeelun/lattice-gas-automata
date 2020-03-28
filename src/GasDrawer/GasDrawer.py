@@ -39,8 +39,8 @@ class GasDrawer:
     def calculateSizes(self):
         width = self.xResolution
         height = self.yResolution
-        self.boxSize = min(width / len(self.map[0]), height / len(self.map))
-        self.DISPLAY = pygame.display.set_mode((self.xResolution,self.yResolution), pygame.FULLSCREEN, 32)
+        self.boxSize = int(min(width / len(self.map[0]), height / len(self.map)))
+        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), pygame.FULLSCREEN, 32)
         self.DISPLAY.fill(self.BACKGROUND)
 
     def drawScale(self):
@@ -93,7 +93,7 @@ class GasDrawer:
                     Vx = velArray[0]
                     Vy = velArray[1]
                     if (Vx != 0 or Vy != 0):
-                        self.drawArrow(x, y, int(math.atan2(Vy, Vx) * 180 / math.pi),
+                        self.drawArrow(x, y, math.atan2(Vy, Vx) * 180 / math.pi,
                                        (((Vx ** 2) + (Vy ** 2)) / maxVel))
 
     def cleanEmptySquares(self):

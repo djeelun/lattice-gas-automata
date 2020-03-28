@@ -323,20 +323,20 @@ public class LatticeGasAutomata {
         int offsetI = chunkSize*coorI, offsetJ = chunkSize*coorJ;
 
         int numberOfParticles = 0;
-        int versorA = 0, versorB = 0, versorC = 0;
+        float versorA = 0, versorB = 0, versorC = 0;
         for(int i=offsetI; i<offsetI+chunkSize && i<height; i++){
-            for(int j=offsetJ; j<offsetJ + chunkSize/2 && j<width; j++){
+            for(int j=offsetJ; j<offsetJ + chunkSize && j<width; j++){
                 int val = lattice[i][j];
                 numberOfParticles += countParticles(val);
                 
-                versorA += val & A;
-                versorA -= val & D;
+                versorA += (val & A) > 0 ? 1 : 0;
+                versorA -= (val & D) > 0 ? 1 : 0;
 
-                versorB += val & B;
-                versorB -= val & E;
+                versorB += (val & B) > 0 ? 1 : 0;
+                versorB -= (val & E) > 0 ? 1 : 0;
 
-                versorC += val & C;
-                versorC -= val & F;
+                versorC += (val & C) > 0 ? 1 : 0;
+                versorC -= (val & F) > 0 ? 1 : 0;
             }
         }
 
