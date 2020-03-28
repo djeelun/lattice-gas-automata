@@ -135,6 +135,26 @@ public class LatticeGasAutomata {
         createWalls();
         createRandomBit();
     }
+    
+    public LatticeGasAutomata(int width, int height, boolean[][] wallRegion) throws NotEnoughSpaceException{
+        this.width = width;
+        this.height = height;
+        this.wallRegion = wallRegion;
+        
+        this.lattice = new char[height][width];
+
+
+        createWalls();
+        createRandomBit();
+    }
+    
+    public void insertParticles(char[][] particles) {
+    	for(int i=0; i<height; i++) {
+    		for(int j=0; j<width; j++) {
+    			lattice[i][j] |= particles[i][j];
+    		}
+    	}
+    }
 
     private void createWalls(){
         for(int i=0; i<height; i++) {
