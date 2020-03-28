@@ -2,6 +2,8 @@ package simulations;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import exceptions.NotEnoughSpaceException;
 
@@ -17,9 +19,12 @@ public class CurrentSimulator {
 		char[][] particles = new char[height][width];
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
-				if(i > 4 && i < (height / 2 - 4) && j == 205) {
+				if((i > 4 && i < (height / 2 - 4) && j >= 283 && j < width - 121) || ((i > height/2 - (height/4) + 3 && i < (height / 2 - 4) && j == 212))) {
 					particles[i][j] = LatticeGasAutomata.A;
-				}else {
+				}else if( (i > 4 && i < (height / 2 - 4) && j >= width - 121) ) {
+					particles[i][j] = LatticeGasAutomata.F;
+				}
+				else {
 					particles[i][j] = 0;
 				}
 			}
@@ -29,21 +34,19 @@ public class CurrentSimulator {
 
 		int halfHeight = height/2;
 		wallRegion.addRectangle(0, 0, width-1, 2, false);
-		wallRegion.addRectangle(30, halfHeight-3, width-121, halfHeight-1, false);
-		
-		wallRegion.addRectangle(20, 0, 22, halfHeight/2+1, false);
-		
-		wallRegion.addRectangle(40, halfHeight/2+1, 42, halfHeight-1, false);
+		wallRegion.addRectangle(70, halfHeight-3, width-121, halfHeight-1, false);
 
-		
-		wallRegion.addRectangle(70, 0, 72, halfHeight/2+1, false);
-		
-		wallRegion.addRectangle(100, halfHeight/2+1, 102, halfHeight-1, false);
+		//first
+		wallRegion.addRectangle(70, halfHeight/2 + 1, 72, halfHeight - 1, false);
 
+		//sec
+		wallRegion.addRectangle(140, 0, 142, halfHeight/2+1, false);
 
-		wallRegion.addRectangle(150, 0, 152, halfHeight/2+1, false);
-		
-		wallRegion.addRectangle(200, halfHeight/2+1, 202, halfHeight-1, false);
+		//third
+		wallRegion.addRectangle(210, halfHeight/2 + 1, 212, halfHeight - 1, false);
+
+		//fourth
+		wallRegion.addRectangle(280, 0, 282, halfHeight/2 + 1, false);
 
 		wallRegion.addRectangle(width-3, 0, width - 1, height - 1, false);
 
