@@ -35,7 +35,7 @@ def changeArrayOfArraysOrder(array):
     for j in range(len(array[0])):
         newArray = []
         for i in range(NUMBER_OF_FILES):
-            newArray.append(array[i][j])
+            newArray.append(int(array[i][j]))
         arrays.append(newArray)
 
     return arrays
@@ -80,8 +80,8 @@ def readEquilibrium(folder):
 
     for i in range(NUMBER_OF_FILES):
         file = open("../../" + folder + "/equilibrium" + str(i+1), "r")
-        print(file)
-        lines = file.readLines()
+
+        lines = file.readlines()
 
         newRatios = [];
         for lineNumber in range(len(lines)):
@@ -98,11 +98,12 @@ def plotEquilibrium(folder):
     plt.figure()
 
     ratios = calculateMeanAndStd(changeArrayOfArraysOrder(readEquilibrium(folder)))
+    ERROR_BAR_STEP = 5000
+    print(np.arange(2000, len(ratios[0]) * ERROR_BAR_STEP, ERROR_BAR_STEP))
 
-    ERROR_BAR_STEP = 10
-    plt.errorbar(np.arange(0, len(ratios[0]), ERROR_BAR_STEP),
-                 [v for i, v in enumerate(ratios[0]) if i % ERROR_BAR_STEP == 0],
-                 yerr=[v for i, v in enumerate(ratios[1]) if i % ERROR_BAR_STEP == 0],
+    plt.errorbar(np.arange(2000, len(ratios[0]) * ERROR_BAR_STEP, ERROR_BAR_STEP),
+                 ratios[0],
+                 yerr=ratios[1],
                  elinewidth=0.8)
 
 

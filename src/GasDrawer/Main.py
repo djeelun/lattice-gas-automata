@@ -13,5 +13,5 @@ simulationRunner = SimulationRunner()
 
 GasPlotter.runPlotter()
 
-#simulationRunner.runSingleSimulation(paths[0])
+#simulationRunner.runSingleSimulation(paths[1])
 #simulationRunner.runMultipleSimulations(paths)

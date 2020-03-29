@@ -22,9 +22,9 @@ import org.jfree.data.general.PieDataset;
 
 import javax.swing.*;
 
-public class FindEquilibriumTime extends JFrame{
+public class FindEquilibriumTime {
 
-    final static int MAX_ITERATIONS = 5000;
+    final static int MAX_ITERATIONS = 500000;
 
     public FindEquilibriumTime(int minN, int maxN, int step, int numberOfExecutions, int numberOfIterations, String file, float threshHoldRatio, int partN) throws IOException, NotEnoughSpaceException {
 
@@ -46,94 +46,96 @@ public class FindEquilibriumTime extends JFrame{
                     int firstEquilibrumIteration = -1;
                     boolean previouslyChanged = false;
                     int sideChanges = 0;
+                    float difference = -1;
+//
+//                    XYSeriesCollection dataset = new XYSeriesCollection( );
+//                    XYSeries serieR = new XYSeries("Contenedor derecho");
+//                    XYSeries serieL = new XYSeries("Contenedor izquierdo");
 
-//                    while(ratioRight < threshHoldRatio && iterations < MAX_ITERATIONS) {
-//                        ratioRight = sim.getRightContainerParticles() / (float)N;
-//                        System.out.println(1- ratioRight + " - " + ratioRight);
-//                        iterations++;
-//                        sim.update();
-//                    }
-
-                    XYSeriesCollection dataset = new XYSeriesCollection( );
-                    XYSeries serieR = new XYSeries("Contenedor derecho");
-                    XYSeries serieL = new XYSeries("Contenedor izquierdo");
+                    while((radioLeft > ratioRight)) {
+                        ratioRight = sim.getRightContainerParticles() / (float) N;
+						radioLeft = 1 - ratioRight;
+                        iterations++;
+                        sim.update();
+                        System.out.println("Iteration: " + iterations);
+                        System.out.println(radioLeft + " - " + ratioRight);
+                    }
 
                     int maxDiffIteration = 0;
 
-                    while ( (maxDifference > threshHoldRatio || maxDifference == -1) && iterations < MAX_ITERATIONS) {
+//                    while ( (maxDifference > threshHoldRatio || maxDifference == -1) && iterations < MAX_ITERATIONS) {
+//
+//						ratioRight = sim.getRightContainerParticles() / (float) N;
+//						radioLeft = 1 - ratioRight;
+//                        maxDifference = - 1;
+//                        side = radioLeft > ratioRight ? 1 : -1;
+//
+//                        if(firstEquilibrumIteration == -1 && (1 - ratioRight <= threshHoldRatio)){
+//                            firstEquilibrumIteration = iterations;
+//                        }
+//
+//                        serieR.add(iterations, sim.getRightContainerParticles());
+//                        serieL.add(iterations, sim.getLeftContainerParticles());
+//                        if(side != previousSide)
+//                            sideChanges++;
+//                        while (side != previousSide && iterations < MAX_ITERATIONS) {
+//                            previouslyChanged = true;
+//                            float difference = Math.abs(ratioRight - radioLeft) / 2 + 0.5f;
+//                            if ((difference > maxDifference || maxDifference == -1) && difference > 0.505f) {
+//                                maxDifference = difference;
+//                                if(maxDifference < threshHoldRatio)
+//                                    maxDiffIteration = iterations;
+//                            }
+//
+//                            iterations++;
+//                            sim.update();
+//							ratioRight = sim.getRightContainerParticles() / (float) N;
+//							radioLeft = 1 - ratioRight;
+//                            side = radioLeft > ratioRight ? 1 : -1;
+//                            serieR.add(iterations, sim.getRightContainerParticles());
+//                            serieL.add(iterations, sim.getLeftContainerParticles());
+//                        }
+//
+//                        if(maxDifference > threshHoldRatio)
+//                            maxDiffIteration = 0;
+//
+//                        if(previouslyChanged)
+//                            previousSide = side * -1;
+//
+//                        iterations++;
+//                        sim.update();
+//                    }
+//
+//                    int itAux = iterations;
+//                    while (itAux < MAX_ITERATIONS) {
+//                        serieR.add(itAux, sim.getRightContainerParticles());
+//                        serieL.add(itAux, sim.getLeftContainerParticles());
+//                        itAux++;
+//                        sim.update();
+//                    }
+//
+//                    if(!previouslyChanged || (iterations == MAX_ITERATIONS && firstEquilibrumIteration != -1) || (sideChanges < 2)){
+//                        iterations = firstEquilibrumIteration;
+//                        maxDiffIteration = iterations;
+//                    }
+//                    dataset.addSeries(serieL);
+//                    dataset.addSeries(serieR);
+//
+//                    XYSeries serie = new XYSeries("Equilibrio");
+//                    for(int i = 0; i < partN; i++) {
+//                        serie.add(maxDiffIteration, i);
+//                    }
+//                    dataset.addSeries(serie);
+//
+//                    JPanel chartPanel = createChartPanel(dataset, partN);
+//                    add(chartPanel, BorderLayout.CENTER);
+//
+//                    setSize(800,600);
+//
+//
+//                    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                    setLocationRelativeTo(null);
 
-						ratioRight = sim.getRightContainerParticles() / (float) N;
-						radioLeft = 1 - ratioRight;
-                        maxDifference = - 1;
-                        side = radioLeft > ratioRight ? 1 : -1;
-
-                        if(firstEquilibrumIteration == -1 && (1 - ratioRight <= threshHoldRatio)){
-                            firstEquilibrumIteration = iterations;
-                        }
-
-                        serieR.add(iterations, sim.getRightContainerParticles());
-                        serieL.add(iterations, sim.getLeftContainerParticles());
-                        if(side != previousSide)
-                            sideChanges++;
-                        while (side != previousSide && iterations < MAX_ITERATIONS) {
-                            previouslyChanged = true;
-                            float difference = Math.abs(ratioRight - radioLeft) / 2 + 0.5f;
-                            if ((difference > maxDifference || maxDifference == -1) && difference > 0.505f) {
-                                maxDifference = difference;
-                                if(maxDifference < threshHoldRatio)
-                                    maxDiffIteration = iterations;
-                            }
-
-                            iterations++;
-                            sim.update();
-							ratioRight = sim.getRightContainerParticles() / (float) N;
-							radioLeft = 1 - ratioRight;
-                            side = radioLeft > ratioRight ? 1 : -1;
-                            serieR.add(iterations, sim.getRightContainerParticles());
-                            serieL.add(iterations, sim.getLeftContainerParticles());
-                        }
-
-                        if(maxDifference > threshHoldRatio)
-                            maxDiffIteration = 0;
-
-                        if(previouslyChanged)
-                            previousSide = side * -1;
-
-                        iterations++;
-                        sim.update();
-                    }
-
-                    int itAux = iterations;
-                    while (itAux < MAX_ITERATIONS) {
-                        serieR.add(itAux, sim.getRightContainerParticles());
-                        serieL.add(itAux, sim.getLeftContainerParticles());
-                        itAux++;
-                        sim.update();
-                    }
-
-                    if(!previouslyChanged || (iterations == MAX_ITERATIONS && firstEquilibrumIteration != -1) || (sideChanges < 2)){
-                        iterations = firstEquilibrumIteration;
-                        maxDiffIteration = iterations;
-                    }
-                    dataset.addSeries(serieL);
-                    dataset.addSeries(serieR);
-
-                    XYSeries serie = new XYSeries("Equilibrio");
-                    for(int i = 0; i < partN; i++) {
-                        serie.add(maxDiffIteration, i);
-                    }
-                    dataset.addSeries(serie);
-
-                    JPanel chartPanel = createChartPanel(dataset, maxDiffIteration, maxDifference);
-                    add(chartPanel, BorderLayout.CENTER);
-
-                    setSize(800,600);
-
-
-                    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    setLocationRelativeTo(null);
-
-                    resultFile.println(iterations == MAX_ITERATIONS ? "-1" : ("" + iterations));
 
 
 
@@ -143,25 +145,4 @@ public class FindEquilibriumTime extends JFrame{
         }
     }
 
-    private JPanel createChartPanel(XYDataset dataset, int maxDiffIter, float maxDiff) { // this method will create the chart panel containin the graph
-        String chartTitle = "";
-        String xAxisLabel = "Numero de iteraciones";
-        String yAxisLabel = "Numero de particulas";
-
-        JFreeChart chart = ChartFactory.createXYLineChart(chartTitle,
-                xAxisLabel, yAxisLabel, dataset);
-        chart.getPlot().setBackgroundPaint( Color.WHITE );
-        // saves the chart as an image files
-        File imageFile = new File("XYLineChart.png");
-        int width = 640;
-        int height = 480;
-
-        try {
-            ChartUtils.saveChartAsPNG(imageFile, chart, width, height);
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
-
-        return new ChartPanel(chart);
-    }
 }

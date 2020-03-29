@@ -6,6 +6,7 @@ import java.util.List;
 
 import exceptions.NotEnoughSpaceException;
 import executions.FindEquilibriumTime;
+import executions.TwoContainerAnimationData;
 import executions.TwoContainerPlottingData;
 import simulations.CurrentSimulator;
 import simulations.LatticeGasAutomata;
@@ -20,11 +21,10 @@ public class Main {
     public static void main(String[] args) throws IOException, NotEnoughSpaceException {
 
 //		try {
-//			String folder = "current/";
-//			int width = 700, height = 400;
+//			String folder = "particles2000/";
+//			int width = 200, height = 200;
 //			char[][] particles = new char[height][width];
-//			CurrentSimulator tcs = new CurrentSimulator(height, width,
-//					NUMBER_OF_ITERATIONS, folder + "staticFile", folder + "dynamicFile", 10);
+//            TwoContainerAnimationData tca = new TwoContainerAnimationData(folder + "staticFile", folder + "dynamicFile", new TwoContainersSimulation(200, 200, 5000,1), 3000, 5);
 //		}catch (IOException | NotEnoughSpaceException e) {
 //			System.err.println(e);
 //			return;
@@ -37,15 +37,9 @@ public class Main {
 //    	plotData(50000);
 //    	plotData(100000);
 
-        List<Integer> list = new ArrayList<>();
-        list.add(2000);
-        list.add(3000);
-        list.add(5000);
-        list.add(20000);
-        list.add(50000);
-        list.add(100000);
-        for(int i = 0; i < list.size(); i += 1)
-         new FindEquilibriumTime(2000, 100000, 5000, NUMBER_OF_EXECUTIONS, NUMBER_OF_ITERATIONS, folder + "equilibrium", 0.55f, list.get(i)).setVisible(true);
+
+        new FindEquilibriumTime(7000, 100000, 5000, NUMBER_OF_EXECUTIONS, NUMBER_OF_ITERATIONS, folder + "equilibrium", 0.025f + 0.5f, 1);
+
 
     }
 

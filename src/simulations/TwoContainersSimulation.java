@@ -81,7 +81,7 @@ public class TwoContainersSimulation {
     	this.latticeGasAutomata.update();
     }
     
-    public Point2D.Float[][] getChunks() {
+    public Point2D.Float[][] getChunks(int chunkSize) {
     	return latticeGasAutomata.getMeanVelocities(chunkSize);
     }
 }

@@ -7,8 +7,9 @@ import java.io.PrintWriter;
 import simulations.TwoContainersSimulation;
 
 public class TwoContainerAnimationData {
-	public void TwoContainerAnimationData(String staticFile, String dynamicFile, TwoContainersSimulation simulation, 
-			int numberOfIterations, int chunkSize) throws FileNotFoundException{
+
+    public TwoContainerAnimationData(String staticFile, String dynamicFile, TwoContainersSimulation simulation,
+                                          int numberOfIterations, int chunkSize) throws FileNotFoundException{
 		int height = simulation.getHeight(), width = simulation.getWidth(), numberOfParticles = simulation.getNumberOfParticles();
 		
 		
@@ -39,7 +40,7 @@ public class TwoContainerAnimationData {
 
                 simulation.update();
 
-                Point2D.Float[][] chunks = simulation.getChunks();
+                Point2D.Float[][] chunks = simulation.getChunks(chunkSize);
                 for(int i=0; i<height/chunkSize; i++){
                     for(int j=0; j<width/chunkSize; j++){
                         float x = (float)chunks[i][j].getX(), y = (float)chunks[i][j].getY();
