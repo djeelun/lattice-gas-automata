@@ -30,7 +30,7 @@ After the simulation ends a folder called 'results' will be created in the root 
 ### Displaying the simulation
 For display python must be installed with [pygame](https://www.pygame.org/) dependency.
 
-After the dependency is install just run:
+After the dependency is installed just run:
 python GasDrawer/Main.py
 
 ## Demo
