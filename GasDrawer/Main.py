@@ -9,4 +9,4 @@ import GasPlotter
 
 simulationRunner = SimulationRunner()
 
-simulationRunner.runSingleSimulation('../results')
+simulationRunner.runSingleSimulation('./results')
