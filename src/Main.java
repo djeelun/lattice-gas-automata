@@ -1,15 +1,12 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import exceptions.NotEnoughSpaceException;
-import executions.FindEquilibriumTime;
 import executions.TwoContainerAnimationData;
 import executions.TwoContainerPlottingData;
-import simulations.CurrentSimulator;
-import simulations.LatticeGasAutomata;
 import simulations.TwoContainersSimulation;
 
 public class Main {
@@ -19,30 +16,46 @@ public class Main {
     final static String folder = "results/";
 
     public static void main(String[] args) throws IOException, NotEnoughSpaceException {
+        Map<String, Integer> arguments = readArgs(args);
 
-//		try {
-//			String folder = "particles2000/";
-//			int width = 200, height = 200;
-//			char[][] particles = new char[height][width];
-//            TwoContainerAnimationData tca = new TwoContainerAnimationData(folder + "staticFile", folder + "dynamicFile", new TwoContainersSimulation(200, 200, 5000,1), 3000, 5);
-//		}catch (IOException | NotEnoughSpaceException e) {
-//			System.err.println(e);
-//			return;
-//		}
+		try {
+            File directory = new File(folder);
+            if (! directory.exists()) {
+                directory.mkdir();
+            }
 
-//    	plotData(2000);
-//    	plotData(3000);
-//    	plotData(5000);
-//    	plotData(20000);
-//    	plotData(50000);
-//    	plotData(100000);
+			int     width = Optional.ofNullable(arguments.get("width")).orElse(200),
+                    height = Optional.ofNullable(arguments.get("height")).orElse(200),
+                    numberOfParticles = Optional.ofNullable(arguments.get("numberOfParticles")).orElse(5000),
+                    numberOfIterations = Optional.ofNullable(arguments.get("numberOfIterations")).orElse(3000),
+                    chunkSize = Optional.ofNullable(arguments.get("chunkSize")).orElse(5);
 
+            TwoContainerAnimationData tca = new TwoContainerAnimationData(
+                    folder + "staticFile",
+                    folder + "dynamicFile",
+                    new TwoContainersSimulation(height, width, numberOfParticles),
+                    numberOfIterations,
+                    chunkSize);
 
-        new FindEquilibriumTime(7000, 100000, 5000, NUMBER_OF_EXECUTIONS, NUMBER_OF_ITERATIONS, folder + "equilibrium", 0.025f + 0.5f, 1);
-
-
+		}catch (IOException | NotEnoughSpaceException e) {
+			System.err.println(e);
+			return;
+		}
     }
 
+    private static Map<String, Integer> readArgs(String[] args){
+        Map<String, Integer> result = new HashMap<>();
+
+        for (String arg: args){
+            String[] splitValues = arg.split("=");
+
+            if(splitValues.length != 2) continue;
+
+            result.put(splitValues[0], Integer.valueOf(splitValues[1]));
+        }
+
+        return result;
+    }
 
     private static void plotData(int particles) throws IOException, NotEnoughSpaceException {
         (new File(folder)).mkdir();

@@ -25,7 +25,7 @@ public class TwoContainersSimulation {
         generateSimulation();
     }
     
-    public TwoContainersSimulation(int height, int width, int numberOfParticles, int numberOfIterations) throws IOException, NotEnoughSpaceException {
+    public TwoContainersSimulation(int height, int width, int numberOfParticles) throws IOException, NotEnoughSpaceException {
 
 		this.width = width;
 		this.height = height;

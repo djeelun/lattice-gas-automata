@@ -13,7 +13,7 @@ public class TwoContainerPlottingData {
 		
 		for(int e =0; e<numberOfExecutions; e++) {
 			System.out.println((e+1)+"/"+numberOfExecutions);
-			TwoContainersSimulation simulation = new TwoContainersSimulation(200, 200, particles, numberOfIterations);
+			TwoContainersSimulation simulation = new TwoContainersSimulation(200, 200, particles);
 			try(PrintWriter particleDistributionFilePW = new PrintWriter(particleDistributionFile+(e+1))){
 
 	            for(int t=1; t <= numberOfIterations; t++){
