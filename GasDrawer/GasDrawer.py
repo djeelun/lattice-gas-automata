@@ -30,6 +30,7 @@ class GasDrawer:
 
     def __init__(self, map, chunkSize, title):
         pygame.init()
+        pygame.display.set_caption('Simulation display')
         self.chunkSize = chunkSize
         self.map = map
         self.calculateSizes()
@@ -40,7 +41,7 @@ class GasDrawer:
         width = self.xResolution
         height = self.yResolution
         self.boxSize = int(min(width / len(self.map[0]), height / len(self.map)))
-        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), pygame.FULLSCREEN, 32)
+        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), 0, 32)
         self.DISPLAY.fill(self.BACKGROUND)
 
     def drawScale(self):
@@ -51,14 +52,14 @@ class GasDrawer:
 
         boxScale = 2
 
-        self.writeText(x + 3, y - 2, "Rapido", 20, self.getColor(1.0))
+        self.writeText(x + 3, y - 2, "Fast", 20, self.getColor(1.0))
 
         for scale in array:
             color = self.getColor(1 - scale)
             self.drawSquare(x, y, color, boxScale)
             y += boxScale
 
-        self.writeText(x + 3, y - 5, "Lento", 20, self.getColor(0.0))
+        self.writeText(x + 3, y - 5, "Slow", 20, self.getColor(0.0))
 
     def writeText(self, x, y, text, size, color):
         font = pygame.font.SysFont("Arial", size)
@@ -146,12 +147,22 @@ class GasDrawer:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
+                raise Exception("Window closed")
+            elif event.type == KEYDOWN:
+               if event.key == K_ESCAPE:
+                   pygame.quit()
+                   raise Exception("Window closed")
+
         self.drawChunkArrows(velocities, maxVel)
         pygame.display.update()
 
     def firstUpdate(self):
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
+                raise Exception("Window closed")
+            elif event.type == KEYDOWN:
+               if event.key == K_ESCAPE:
+                   pygame.quit()
+                   raise Exception("Window closed")
         self.drawWalls()
         pygame.display.update()

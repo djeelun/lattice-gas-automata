@@ -26,7 +26,7 @@ class SimulationRunner:
 
         chunkSize, map, particles = reader.readStatic()
 
-        drawer = GasDrawer(map, chunkSize, "N = 5000")
+        drawer = GasDrawer(map, chunkSize, "")
 
         velocities, maxVel = reader.readNextTime()
         drawer.firstUpdate()
