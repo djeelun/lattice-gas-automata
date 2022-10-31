@@ -18,8 +18,8 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
 
 class GasDrawer:
     DISPLAY = 0
-    xResolution = 1440
-    yResolution = 1000
+    xResolution = 1000
+    yResolution = 800
     BACKGROUND = (108, 181, 245)
     BLACK = (40, 40, 40)
     boxSize = 0
@@ -27,15 +27,17 @@ class GasDrawer:
     chunkSize = 0
     SCALE_DISPLAY_SIZE = 150
     title = None
+    num_particles = 0
 
-    def __init__(self, map, chunkSize, title):
+    def __init__(self, map, chunkSize, model, num_particles):
         pygame.init()
         pygame.display.set_caption('Simulation display')
         self.chunkSize = chunkSize
         self.map = map
         self.calculateSizes()
         self.SCALE_DISPLAY_SIZE = self.xResolution - ((len(map[0]) + 2) * self.boxSize)
-        self.title = title
+        self.title = "Model: " + model
+        self.num_particles = "n=" + str(num_particles)
 
     def calculateSizes(self):
         width = self.xResolution
@@ -48,7 +50,7 @@ class GasDrawer:
         array = np.arange(0.0, 1.0, 0.02)
         w, h = pygame.display.get_surface().get_size()
         x = (w - self.SCALE_DISPLAY_SIZE + 30) / self.boxSize
-        y = ((h / self.boxSize) / 2) - len(array)
+        y = ((h / self.boxSize) / 5 * 3) - len(array)
 
         boxScale = 2
 
@@ -69,7 +71,8 @@ class GasDrawer:
     def drawWalls(self):
         self.DISPLAY.fill(self.BACKGROUND)
         w, h = pygame.display.get_surface().get_size()
-        self.writeText((w - self.SCALE_DISPLAY_SIZE + 3) / self.boxSize, 0, self.title, 25, self.BLACK)
+        self.writeText((w - self.SCALE_DISPLAY_SIZE + 30) / self.boxSize, 15, self.title, 25, self.BLACK)
+        self.writeText((w - self.SCALE_DISPLAY_SIZE + 30) / self.boxSize, 30, self.num_particles, 25, self.BLACK)
         self.drawScale()
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
@@ -110,14 +113,15 @@ class GasDrawer:
     def drawArrow(self, x, y, rotation=0, scale=1):
         newBox = self.boxSize * self.chunkSize
         lineBold = 0.001 * newBox / 2
-        lineLength = (0.8 * newBox / 2)
-        arrowSize = (0.15 * newBox / 2)
+        lineLength = 0.8 * newBox * scale # removed *0.8 and added scale
+        arrowSize = (0.3 * newBox / 2)
         xCord = x * newBox + (newBox / 2)
         yCord = y * newBox + (newBox / 2)
         rotationRadians = math.pi * rotation / 180
         sin = math.sin(rotationRadians)
         cos = math.cos(rotationRadians)
         color = self.getColor(scale)
+        # color = [255, 255, 255]
         pygame.gfxdraw.aapolygon(self.DISPLAY, ((xCord - (lineBold * sin), yCord - (lineBold * cos)),
                                                 (xCord + (lineBold * sin), yCord + (lineBold * cos)),
                                                 (xCord + (lineLength * cos) + (lineBold * sin),

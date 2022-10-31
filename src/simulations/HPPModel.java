@@ -6,15 +6,18 @@ import java.util.List;
 
 import exceptions.NotEnoughSpaceException;
 
-public class LatticeGasAutomata implements ILatticeGasAutomata {
+public class HPPModel implements ILatticeGasAutomata {
 
     /*
-        Hex map is represented in the following way:
+        HPP map is represented in the following way
 
-           1 2 3       1 2 3
-            4 5 6  ->  4 5 6
-           7 8 9       7 8 9
+          1
+        4 + 2
+          3
 
+          A
+        D + B
+          C
      */
     private char[][] lattice;
     private boolean[][] spawnRegion, wallRegion;
@@ -28,25 +31,20 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
     public static final char B = 0b00000010;
     public static final char C = 0b00000100;
     public static final char D = 0b00001000;
-    public static final char E = 0b00010000;
-    public static final char F = 0b00100000;
+    // public static final char E = 0b00010000;
+    // public static final char F = 0b00100000;
     public static final char S = 0b01000000;
-    public static final char R = 0b10000000;
 
     private char invertVelocity(char v){
         switch (v){
             case A:
-                return D;
-            case B:
-                return E;
-            case C:
-                return F;
-            case D:
-                return A;
-            case E:
-                return B;
-            case F:
                 return C;
+            case B:
+                return D;
+            case C:
+                return A;
+            case D:
+                return B;
         }
         return 0;
     }
@@ -56,62 +54,16 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
         if((value & S) != 0){
 
             value = (char)(invertVelocity((char)(value & A)) + invertVelocity((char)(value & B)) + invertVelocity((char)(value & C))
-                +  invertVelocity((char)(value & D)) +  invertVelocity((char)(value & E)) +  invertVelocity((char)(value & F)) + S + (value & R));
+                    +  invertVelocity((char)(value & D)) + S);
 
         }else{
             switch (value){
                 //two particle collision
-                case A+D:
-                    value = B + E;
+                case A+C:
+                    value = B + D;
                     break;
-                case B+E:
-                    value = C + F;
-                    break;
-                case C+F:
-                    value = A + D;
-                    break;
-                case A+D+R:
-                    value = C + F;
-                    break;
-                case B+E+R:
-                    value = A + D;
-                    break;
-                case C+F+R:
-                    value = B + E;
-                    break;
-
-                //3 particle collision
-                case A+C+E:
-                    value = B + D + F;
-                    break;
-                case B + D + F:
-                    value = A + C + E;
-                    break;
-                case A + C + E + R:
-                    value = B + D + F + R;
-                    break;
-                case B + D + F + R:
-                    value = A + C + E + R;
-                    break;
-
-                //4 particle collision
-                case C + B + E + F:
-                    value = C + D + A + F;
-                    break;
-                case C + B + E + F + R:
-                    value = B + A + D + E;
-                    break;
-                case C + D + A + F:
-                    value = E + B + D + A;
-                    break;
-                case C + D + A + F + R:
-                    value = E + B + C + F;
-                    break;
-                case D + E + B + A:
-                    value = C + F + D + A;
-                    break;
-                case D + E + B + A + R:
-                    value = C + F + B + E;
+                case B+D:
+                    value = A + C;
                     break;
             }
         }
@@ -121,12 +73,12 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
     }
 
 
-    public LatticeGasAutomata(int width, int height, boolean[][] spawnRegion, boolean[][] wallRegion, int particlesAmount) throws NotEnoughSpaceException{
+    public HPPModel(int width, int height, boolean[][] spawnRegion, boolean[][] wallRegion, int particlesAmount) throws NotEnoughSpaceException{
         this.width = width;
         this.height = height;
         this.spawnRegion = spawnRegion;
         this.wallRegion = wallRegion;
-        
+
         this.lattice = new char[height][width];
 
         calculateSpawnPoints();
@@ -134,27 +86,25 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
             throw new NotEnoughSpaceException("There is no space to generate the particles");
         fillWithParticles(particlesAmount);
         createWalls();
-        createRandomBit();
     }
-    
-    public LatticeGasAutomata(int width, int height, boolean[][] wallRegion) throws NotEnoughSpaceException{
+
+    public HPPModel(int width, int height, boolean[][] wallRegion) throws NotEnoughSpaceException{
         this.width = width;
         this.height = height;
         this.wallRegion = wallRegion;
-        
+
         this.lattice = new char[height][width];
 
 
         createWalls();
-        createRandomBit();
     }
-    
+
     public void insertParticles(char[][] particles) {
-    	for(int i=0; i<height; i++) {
-    		for(int j=0; j<width; j++) {
-    			lattice[i][j] |= particles[i][j];
-    		}
-    	}
+        for(int i=0; i<height; i++) {
+            for(int j=0; j<width; j++) {
+                lattice[i][j] |= particles[i][j];
+            }
+        }
     }
 
     private void createWalls(){
@@ -181,8 +131,6 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
         availableSpaces.add(B);
         availableSpaces.add(C);
         availableSpaces.add(D);
-        availableSpaces.add(E);
-        availableSpaces.add(F);
 
         Iterator<Character> iterator = availableSpaces.iterator();
         while(iterator.hasNext()){
@@ -213,14 +161,6 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
         }
     }
 
-    private void createRandomBit(){
-        for(int i=0; i<height; i++) {
-            for (int j = 0; j < width; j++) {
-                this.lattice[i][j] += (char) Math.round(Math.random()) * R;
-            }
-        }
-    }
-
     public void update(){
         hop();
         collide();
@@ -233,63 +173,27 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
             for (int j = 0; j < width; j++) {
 
                 //horizontal movement does not depend on parity of row
-                //A
+                //B
                 if(j+1<width){
-                    newLattice[i][j+1] += lattice[i][j] & A;
+                    newLattice[i][j+1] += lattice[i][j] & B;
                 }
                 //D
                 if(j-1>0){
                     newLattice[i][j-1] += lattice[i][j] & D;
                 }
 
-                //vertical movement does depend on parity of row
-                if(i % 2 == 0){
-                    //C
-                    if(i-1>0){
-                        newLattice[i-1][j] += lattice[i][j] & C;
-                    }
-
-                    //B
-                    if(i-1>0 && j+1<width){
-                        newLattice[i-1][j+1] += lattice[i][j] & B;
-                    }
-
-
-                    //F
-                    if(i+1<height && j+1<width){
-                        newLattice[i+1][j+1] += lattice[i][j] & F;
-                    }
-
-                    //E
-                    if(i+1<height){
-                        newLattice[i+1][j] += lattice[i][j] & E;
-                    }
-                }else{
-                    //B
-                    if(i-1>0){
-                        newLattice[i-1][j] += lattice[i][j] & B;
-                    }
-
-                    //C
-                    if(i-1>0 && j-1>0){
-                        newLattice[i-1][j-1] += lattice[i][j] & C;
-                    }
-
-
-                    //E
-                    if(i+1<height && j-1>0){
-                        newLattice[i+1][j-1] += lattice[i][j] & E;
-                    }
-
-                    //F
-                    if(i+1<height){
-                        newLattice[i+1][j] += lattice[i][j] & F;
-                    }
+                //vertical movement does not depend on parity of row
+                //A
+                if(i-1>0){
+                    newLattice[i-1][j] += lattice[i][j] & A;
+                }
+                //C
+                if(i+1<height){
+                    newLattice[i+1][j] += lattice[i][j] & C;
                 }
 
-
                 //S
-                newLattice[i][j] += lattice[i][j] & (S | R);
+                newLattice[i][j] += lattice[i][j] & S;
 
             }
         }
@@ -323,32 +227,29 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
         int offsetI = chunkSize*coorI, offsetJ = chunkSize*coorJ;
 
         int numberOfParticles = 0;
-        float versorA = 0, versorB = 0, versorC = 0;
+        float versorA = 0, versorB = 0;
         for(int i=offsetI; i<offsetI+chunkSize && i<height; i++){
             for(int j=offsetJ; j<offsetJ + chunkSize && j<width; j++){
                 int val = lattice[i][j];
                 numberOfParticles += countParticles(val);
-                
+
                 versorA += (val & A) > 0 ? 1 : 0;
-                versorA -= (val & D) > 0 ? 1 : 0;
+                versorA -= (val & C) > 0 ? 1 : 0;
 
                 versorB += (val & B) > 0 ? 1 : 0;
-                versorB -= (val & E) > 0 ? 1 : 0;
-
-                versorC += (val & C) > 0 ? 1 : 0;
-                versorC -= (val & F) > 0 ? 1 : 0;
+                versorB -= (val & D) > 0 ? 1 : 0;
             }
         }
 
-        double x = (versorA + versorB/2 - versorC/2),
-                y = (versorB*Math.sqrt(3)/2 + versorC*Math.sqrt(3)/2);
-        
+        float x = versorB,
+                y = versorA;
+
         if(numberOfParticles != 0) {
-        	x /= numberOfParticles;
-        	y /= numberOfParticles;
+            x /= numberOfParticles;
+            y /= numberOfParticles;
         }
 
-        return new Point2D.Float((float)x, (float)y);
+        return new Point2D.Float(x, y);
     }
 
     public int countParticlesInsideRegion(boolean[][] region){
@@ -369,8 +270,6 @@ public class LatticeGasAutomata implements ILatticeGasAutomata {
         value += (cell & B) != 0 ? 1 : 0;
         value += (cell & C) != 0 ? 1 : 0;
         value += (cell & D) != 0 ? 1 : 0;
-        value += (cell & E) != 0 ? 1 : 0;
-        value += (cell & F) != 0 ? 1 : 0;
         return value;
     }
 }

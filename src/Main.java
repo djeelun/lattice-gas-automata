@@ -7,6 +7,7 @@ import java.util.Optional;
 import exceptions.NotEnoughSpaceException;
 import executions.TwoContainerAnimationData;
 import executions.TwoContainerPlottingData;
+import simulations.HallwaySimulation;
 import simulations.TwoContainersSimulation;
 
 public class Main {
@@ -26,17 +27,19 @@ public class Main {
 
 			int     width = Optional.ofNullable(arguments.get("width")).orElse(200),
                     height = Optional.ofNullable(arguments.get("height")).orElse(200),
-                    numberOfParticles = Optional.ofNullable(arguments.get("numberOfParticles")).orElse(5000),
+                    numberOfParticles = Optional.ofNullable(arguments.get("numberOfParticles")).orElse(10000),
                     numberOfIterations = Optional.ofNullable(arguments.get("numberOfIterations")).orElse(3000),
-                    chunkSize = Optional.ofNullable(arguments.get("chunkSize")).orElse(5);
+                    chunkSize = Optional.ofNullable(arguments.get("chunkSize")).orElse(10);
+            boolean useHPP = true;
 
             TwoContainerAnimationData tca = new TwoContainerAnimationData(
                     folder + "staticFile",
                     folder + "dynamicFile",
-                    new TwoContainersSimulation(height, width, numberOfParticles),
+                    new TwoContainersSimulation(height, width, numberOfParticles, useHPP),
                     numberOfIterations,
                     chunkSize);
 
+            plotData(10000);
 		}catch (IOException | NotEnoughSpaceException e) {
 			System.err.println(e);
 			return;

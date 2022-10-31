@@ -9,7 +9,7 @@ class SimulationRunner:
         for path in paths:
             reader = FilesReader(path)
 
-            chunkSize, map, particles = reader.readStatic()
+            chunkSize, map, particles, model = reader.readStatic()
 
             drawer = GasDrawer(map, chunkSize, "N = " + str(particles))
 
@@ -24,9 +24,9 @@ class SimulationRunner:
     def runSingleSimulation(self, path):
         reader = FilesReader(path)
 
-        chunkSize, map, particles = reader.readStatic()
+        chunkSize, map, particles, model = reader.readStatic()
 
-        drawer = GasDrawer(map, chunkSize, "")
+        drawer = GasDrawer(map, chunkSize, model, particles)
 
         velocities, maxVel = reader.readNextTime()
         drawer.firstUpdate()

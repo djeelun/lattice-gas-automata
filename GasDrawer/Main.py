@@ -9,4 +9,8 @@ import GasPlotter
 
 simulationRunner = SimulationRunner()
 
-simulationRunner.runSingleSimulation('./results')
+folderPath = "C:/Users/Monkey D. Luffy/Documents/GitHub/lattice-gas-automata/src/results"
+
+# simulationRunner.runSingleSimulation(folderPath)
+
+GasPlotter.plotDataset(folderPath)

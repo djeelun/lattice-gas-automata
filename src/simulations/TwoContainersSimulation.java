@@ -5,15 +5,15 @@ import java.io.IOException;
 
 import exceptions.NotEnoughSpaceException;
 
-public class TwoContainersSimulation {
+public class TwoContainersSimulation implements ISimulation {
 	private int height, width;
 	private Region leftContainer, rightContainer, wallRegion;
-	private LatticeGasAutomata latticeGasAutomata;
+	private ILatticeGasAutomata latticeGasAutomata;
 	
 	private int numberOfParticles;
 	private int chunkSize;
-	
-	
+	private boolean useHPP = false;
+
     public TwoContainersSimulation(int height, int width, int numberOfParticles, int numberOfIterations,
                                     int chunkSize) throws IOException, NotEnoughSpaceException {
 
@@ -33,24 +33,40 @@ public class TwoContainersSimulation {
 	
 		generateSimulation();
 	}
+
+    public TwoContainersSimulation(int height, int width, int numberOfParticles, boolean useHPP) throws IOException, NotEnoughSpaceException {
+
+        this.width = width;
+        this.height = height;
+        this.numberOfParticles = numberOfParticles;
+        this.useHPP = useHPP;
+
+        generateSimulation();
+    }
     
     private void generateSimulation() throws NotEnoughSpaceException{
+        int wallPart = 2;
+
     	leftContainer = new Region(width, height);
-        leftContainer.addRectangle(0, 0, width/2-1, height-1, false);
+        leftContainer.addRectangle(0, 0, width/wallPart-1, height-1, false);
 
         rightContainer = new Region(width, height);
-        rightContainer.addRectangle(width/2+1, 0, width-1, height-1, false);
+        rightContainer.addRectangle(width/wallPart+1, 0, width-1, height-1, false);
 
         wallRegion = new Region(width, height);
         //middle wall
-        wallRegion.addRectangle(width/2, 0, width/2, height-1, false);
+        wallRegion.addRectangle(width/wallPart, 0, width/wallPart, height-1, false);
 
         //hole in the wall
-        wallRegion.addRectangle(width/2-1, height/2-height/8, width/2 + 1, height/2+height/8, true);
+        wallRegion.addRectangle(width/wallPart-1, height/2-height/8, width/wallPart + 1, height/2+height/8, true);
 
         wallRegion.addRectangleBorders(0, 0, width-1, height-1, 2, false);
 
-        latticeGasAutomata = new LatticeGasAutomata(width, height, leftContainer.getRegion(), wallRegion.getRegion(), numberOfParticles);
+        if (useHPP) {
+            latticeGasAutomata = new HPPModel(width, height, leftContainer.getRegion(), wallRegion.getRegion(), numberOfParticles);
+        } else {
+            latticeGasAutomata = new LatticeGasAutomata(width, height, leftContainer.getRegion(), wallRegion.getRegion(), numberOfParticles);
+        }
     }
     
     public int getLeftContainerParticles() {
@@ -68,7 +84,11 @@ public class TwoContainersSimulation {
     public int getHeight() {
     	return height;
     }
-    
+
+    public boolean getUseHPP() {
+        return useHPP;
+    }
+
     public Region getWallRegion() {
     	return wallRegion;
     }

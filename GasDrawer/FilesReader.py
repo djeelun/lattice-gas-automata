@@ -5,6 +5,7 @@ class FilesReader:
     dynamicFile = None
     staticFile = None
 
+    model = ""
     height = 0
     width = 0
     particles = 0
@@ -33,20 +34,23 @@ class FilesReader:
         lineNumber = 0
         parameterNumber = 0
 
-        while(len(lines) > lineNumber and parameterNumber < 4):
+        while(len(lines) > lineNumber and parameterNumber < 5):
             line = lines[lineNumber]
             if(len(line) > 0 and line[0] != '#'):
 
                 if parameterNumber == 0:
+                    self.model = line[0:-1]
+
+                if parameterNumber == 1:
                     self.readMapSize(line)
 
-                elif parameterNumber == 1:
+                elif parameterNumber == 2:
                     self.particles = int(line)
 
-                elif parameterNumber == 2:
+                elif parameterNumber == 3:
                     self.iterations = int(line)
 
-                elif parameterNumber == 3:
+                elif parameterNumber == 4:
                     self.chunkSize = int(line)
 
                 parameterNumber += 1
@@ -59,7 +63,7 @@ class FilesReader:
 
         self.map = [[int(num) for num in line.split()] for line in lines[lineNumber::]]
 
-        return self.chunkSize, self.map, self.particles
+        return self.chunkSize, self.map, self.particles, self.model
 
     def readVelocity(self, line):
         velocity = [0, 0]

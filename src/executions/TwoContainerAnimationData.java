@@ -4,17 +4,20 @@ import java.awt.geom.Point2D;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import simulations.ISimulation;
 import simulations.TwoContainersSimulation;
 
 public class TwoContainerAnimationData {
 
-    public TwoContainerAnimationData(String staticFile, String dynamicFile, TwoContainersSimulation simulation,
+    public TwoContainerAnimationData(String staticFile, String dynamicFile, ISimulation simulation,
                                           int numberOfIterations, int chunkSize) throws FileNotFoundException{
 		int height = simulation.getHeight(), width = simulation.getWidth(), numberOfParticles = simulation.getNumberOfParticles();
-		
+		boolean useHPP = simulation.getUseHPP();
 		
 		
 		try(PrintWriter staticFilePW = new PrintWriter(staticFile)){
+            staticFilePW.println("# MODEL");
+            staticFilePW.println(useHPP ? "HPP" : "FHP");
             staticFilePW.println("# HEIGHT WIDTH");
             staticFilePW.println(height + " " + width);
             staticFilePW.println("# NUMBER OF PARTICLES");

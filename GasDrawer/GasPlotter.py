@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
 
 NUMBER_OF_FILES = 20
 
@@ -8,7 +9,7 @@ def readFromFiles(folder):
     rightContainer = []
 
     for i in range(NUMBER_OF_FILES):
-        file = open("../../" + folder + "/distribution"+str(i+1), "r")
+        file = open(folder + "/particleDistributions(10000)/distribution"+str(i+1), "r")
 
         lines = file.readlines()
 
@@ -66,14 +67,17 @@ def plotDataset(folder):
     plt.errorbar(np.arange(0, len(leftContainerValues[0]), ERROR_BAR_STEP),
                  [v for i, v in enumerate(leftContainerValues[0]) if i % ERROR_BAR_STEP == 0],
                  yerr=[v for i, v in enumerate(leftContainerValues[1]) if i % ERROR_BAR_STEP == 0],
-                 elinewidth=0.5, label="Contenedor izquierdo")
+                 elinewidth=0.5, label="Left container")
     plt.errorbar(np.arange(0, len(rightContainerValues[0]), ERROR_BAR_STEP),
                  [v for i, v in enumerate(rightContainerValues[0]) if i % ERROR_BAR_STEP == 0],
                  yerr=[v for i, v in enumerate(rightContainerValues[1]) if i % ERROR_BAR_STEP == 0],
-                 elinewidth=0.5, label="Contenedor derecho")
+                 elinewidth=0.5, label="Right container")
 
-    plt.xlabel('Numero de iteraciones')
-    plt.ylabel('Numero de particulas')
+    plt.xlabel('Time (iterations)')
+    plt.ylabel('Number of particles')
+    plt.title('HPP: Particle Distribution over Time')
+    plt.legend()
+    plt.savefig("figures/figure" + datetime.utcnow().strftime("%m%d%Y %H%M%S"))
 
 def readEquilibrium(folder):
     ratios = [];
