@@ -31,7 +31,9 @@ class SimulationRunner:
         velocities, maxVel = reader.readNextTime()
         drawer.firstUpdate()
         time.sleep(4)
+        n = 1
 
         while len(velocities) > 0:
-            drawer.update(velocities, maxVel)
+            drawer.update(velocities, maxVel, frameNr=n)
             velocities, maxVel = reader.readNextTime()
+            n = n + 1

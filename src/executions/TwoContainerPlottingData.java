@@ -9,11 +9,10 @@ import simulations.TwoContainersSimulation;
 
 public class TwoContainerPlottingData {
 	public TwoContainerPlottingData(String particleDistributionFile,
-			int numberOfIterations, int numberOfExecutions, int particles) throws IOException, NotEnoughSpaceException {
-		
+			int numberOfIterations, int numberOfExecutions, int particles, boolean useHPP) throws IOException, NotEnoughSpaceException {
 		for(int e =0; e<numberOfExecutions; e++) {
 			System.out.println((e+1)+"/"+numberOfExecutions);
-			TwoContainersSimulation simulation = new TwoContainersSimulation(200, 200, particles);
+			TwoContainersSimulation simulation = new TwoContainersSimulation(200, 200, particles, useHPP);
 			try(PrintWriter particleDistributionFilePW = new PrintWriter(particleDistributionFile+(e+1))){
 
 	            for(int t=1; t <= numberOfIterations; t++){

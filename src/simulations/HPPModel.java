@@ -82,7 +82,7 @@ public class HPPModel implements ILatticeGasAutomata {
         this.lattice = new char[height][width];
 
         calculateSpawnPoints();
-        if(spawnPoints.size() * 6 < particlesAmount)
+        if(spawnPoints.size() * 4 < particlesAmount)
             throw new NotEnoughSpaceException("There is no space to generate the particles");
         fillWithParticles(particlesAmount);
         createWalls();

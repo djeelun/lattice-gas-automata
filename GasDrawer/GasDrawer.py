@@ -28,6 +28,7 @@ class GasDrawer:
     SCALE_DISPLAY_SIZE = 150
     title = None
     num_particles = 0
+    frameNr = 0
 
     def __init__(self, map, chunkSize, model, num_particles):
         pygame.init()
@@ -91,6 +92,8 @@ class GasDrawer:
     def drawChunkArrows(self, velocities, maxVel):
         if (len(velocities) > 0):
             self.drawWalls()
+            w, _ = pygame.display.get_surface().get_size()
+            self.writeText((w - self.SCALE_DISPLAY_SIZE + 30) / self.boxSize, 45, "t=" + str(self.frameNr), 25, self.BLACK)
             for y in range(len(velocities)):
                 for x in range(len(velocities[y])):
                     velArray = velocities[y][x]
@@ -113,8 +116,8 @@ class GasDrawer:
     def drawArrow(self, x, y, rotation=0, scale=1):
         newBox = self.boxSize * self.chunkSize
         lineBold = 0.001 * newBox / 2
-        lineLength = 0.8 * newBox * scale # removed *0.8 and added scale
-        arrowSize = (0.3 * newBox / 2)
+        lineLength = 0.8 * newBox / 2# * scale # removed *0.8 and added scale
+        arrowSize = (0.15 * newBox / 2)
         xCord = x * newBox + (newBox / 2)
         yCord = y * newBox + (newBox / 2)
         rotationRadians = math.pi * rotation / 180
@@ -147,7 +150,7 @@ class GasDrawer:
                                                      (xCord + (lineLength * cos) - (lineBold * sin),
                                                       yCord - (lineLength * sin) - (lineBold * cos))), color)
 
-    def update(self, velocities, maxVel):
+    def update(self, velocities, maxVel, frameNr):
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -157,6 +160,7 @@ class GasDrawer:
                    pygame.quit()
                    raise Exception("Window closed")
 
+        self.frameNr = frameNr
         self.drawChunkArrows(velocities, maxVel)
         pygame.display.update()
 
