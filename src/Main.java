@@ -27,7 +27,7 @@ public class Main {
 
 			int     width = Optional.ofNullable(arguments.get("width")).orElse(200),
                     height = Optional.ofNullable(arguments.get("height")).orElse(200),
-                    numberOfParticles = Optional.ofNullable(arguments.get("numberOfParticles")).orElse(115247),
+                    numberOfParticles = Optional.ofNullable(arguments.get("numberOfParticles")).orElse(75000),
                     numberOfIterations = Optional.ofNullable(arguments.get("numberOfIterations")).orElse(3000),
                     chunkSize = Optional.ofNullable(arguments.get("chunkSize")).orElse(5);
             boolean useHPP = false;
@@ -41,18 +41,18 @@ public class Main {
 //                    chunkSize);
 
 //            int tenHPP = 19208 * 4 / 10;
-//            int tenFHP = 19208 * 6 / 10;
-//            int stepSize = 5000;
+            int tenFHP = 19208 * 6 / 10;
+            int stepSize = 5000;
 //            for (int i = stepSize; i <= 75000; i+=stepSize) {
 //                System.out.println("Starting iteration HPP: " + i);
 //                plotData(i, useHPP);
 //            }
-//            useHPP = false;
-//            for (int i = stepSize; i <= 75000; i+=stepSize) {
-//                System.out.println("Starting iteration FHP: " + i);
-//                plotData(i, useHPP);
-//            }
-            plotData(numberOfParticles, useHPP);
+            useHPP = false;
+            for (int i = 80000; i <= 115000; i+=stepSize) {
+                System.out.println("Starting iteration FHP: " + i);
+                plotData(i, useHPP);
+            }
+            //plotData(numberOfParticles, useHPP);
 
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;

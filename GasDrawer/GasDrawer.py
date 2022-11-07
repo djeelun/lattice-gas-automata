@@ -20,7 +20,7 @@ class GasDrawer:
     DISPLAY = 0
     xResolution = 1000
     yResolution = 800
-    BACKGROUND = (108, 181, 245)
+    BACKGROUND = (255, 255, 255) # (108, 181, 245)
     BLACK = (40, 40, 40)
     boxSize = 0
     map = None

@@ -3,8 +3,9 @@ import numpy as np
 from datetime import datetime
 from similaritymeasures import frechet_dist
 import math
+from scipy.signal import argrelextrema
 
-NUMBER_OF_FILES = 20
+NUMBER_OF_FILES = 1
 
 def readFromFiles(folder, numParticles=10000):
     leftContainer = []
@@ -77,6 +78,8 @@ def plotDifference(folder, numParticles=10000, model="FHP"):
 
     vArr = [math.fabs(a_i - b_i) for a_i, b_i in zip(v1, v2)]
 
+    plt.ylim(0, 5000)
+    plt.xlim(2000, 10000)
     plt.plot(np.arange(0, len(leftContainerValues[0]), ERROR_BAR_STEP),
             vArr)
 
@@ -84,7 +87,7 @@ def plotDifference(folder, numParticles=10000, model="FHP"):
     plt.ylabel('Number of particles')
     plt.title(model + ': Particle Difference over Time ' + num_particles_k)
     plt.margins(x=0, y=0)
-    plt.savefig(folder + "/difference")
+    plt.savefig(folder + "/difference", dpi=1000)
     plt.close()
 
 def plotDataset(folder, numParticles=10000, model="FHP", return_plot=False):
@@ -123,7 +126,7 @@ def plotDataset(folder, numParticles=10000, model="FHP", return_plot=False):
     if return_plot:
         return plt
 
-    plt.savefig(folder + "/figure dist")
+    plt.savefig(folder + "/figure dist", dpi=1000)
 
     plt.figure()
     plt.plot(np.arange(0, len(leftContainerValues[0]), ERROR_BAR_STEP), 
@@ -131,7 +134,7 @@ def plotDataset(folder, numParticles=10000, model="FHP", return_plot=False):
     plt.xlabel('Time (iterations)')
     plt.ylabel('Std. between different iterations')
     plt.title(model + ': Std. Particle Distribution over Time ' + num_particles_k)
-    plt.savefig(folder + "/figure std")
+    plt.savefig(folder + "/figure std", dpi=1000)
     plt.close()
 
 def readEquilibrium(folder):
@@ -196,11 +199,17 @@ def plotEquilibrium(folder, num_particles, model):
     # We only need either the left or the right container
     _, rightContainer = readFromFiles(folder, num_particles)
     containerValues, _ = calculateMeanAndStd(changeArrayOfArraysOrder(rightContainer))
+    smCVs = [v for i, v in enumerate(containerValues) if i % 15 == 0]
+
+    # (equilibria,) = argrelextrema(np.convolve(smCVs, 200, 'flat'), np.greater)
+    # print(equilibria)
 
     equilibrium = findEquilibrium(containerValues, num_particles)
     
     myPlot = plotDataset(folder, num_particles, model, True)
     myPlot.axvline(x=equilibrium, color='g')
+    myPlot.annotate(str(equilibrium), xy=(equilibrium, 0), xytext=(equilibrium - 30, -(num_particles / 10)), arrowprops=dict(facecolor='black', arrowstyle='-'))
+    myPlot.margins(x=0, y=0)
     myPlot.savefig(folder + "/equilibrium")
     myPlot.close()
 
@@ -239,40 +248,41 @@ def plotInterval(folder, num_particles, model):
 
 def plotAllEquilibria(fhp_path_list, hpp_path_list, num_particles_list, output_path):
     fhpEquilibria = []
-    hppEquilibria = []
+    # hppEquilibria = []
     for i in range(0, len(num_particles_list)):
         num_particles = num_particles_list[i]
         fhp_path = fhp_path_list + "(" + str(num_particles) + ")"
-        hpp_path = hpp_path_list + "(" + str(num_particles) + ")"
+        # hpp_path = hpp_path_list + "(" + str(num_particles) + ")"
 
         # We only need either the left or the right container
-        fhpLeftContainer, _ = readFromFiles(fhp_path, num_particles)
-        fhpContainerValues, _ = calculateMeanAndStd(changeArrayOfArraysOrder(fhpLeftContainer))
+        fhpLeftContainer, fhpRightContainer = readFromFiles(fhp_path, num_particles)
+        fhpContainerValues, _ = calculateMeanAndStd(changeArrayOfArraysOrder(fhpRightContainer))
         fhpEquilibria.append(findEquilibrium(fhpContainerValues, num_particles))
 
-        hppLeftContainer, _ = readFromFiles(hpp_path, num_particles)
-        hppContainerValues, _ = calculateMeanAndStd(changeArrayOfArraysOrder(hppLeftContainer))
-        hppEquilibria.append(findEquilibrium(hppContainerValues, num_particles))
+        # hppLeftContainer, _ = readFromFiles(hpp_path, num_particles)
+        # hppContainerValues, _ = calculateMeanAndStd(changeArrayOfArraysOrder(hppLeftContainer))
+        # hppEquilibria.append(findEquilibrium(hppContainerValues, num_particles))
 
     plt.figure()
 
     plt.plot(num_particles_list, fhpEquilibria, label="FHP")
-    plt.plot(num_particles_list, hppEquilibria, label="HPP")
+    # plt.plot(num_particles_list, hppEquilibria, label="HPP")
     plt.xlabel("Number of particles")
-    plt.ylabel("Time of equilibrium")
-    plt.title("Time of equilibrium for different particle densities")
-    plt.legend()
+    plt.ylabel("T_0")
+    plt.title("T_0 for different particle densities")
+    # plt.legend()
     plt.savefig(output_path + "/allEquilibria")
+    plt.close() # beware
 
-    plt.figure()
-    vArr = [math.fabs(a_i - b_i) for a_i, b_i in zip(fhpEquilibria, hppEquilibria)]
+    # plt.figure()
+    # vArr = [math.fabs(a_i - b_i) for a_i, b_i in zip(fhpEquilibria, hppEquilibria)]
 
-    plt.plot(num_particles_list, vArr)
-    plt.xlabel("Number of particles")
-    plt.ylabel("Difference in time of equilibrium")
-    plt.title("Difference in time of between HPP and FHP")
-    plt.savefig(output_path + "/allEquilibriaDiff")
-    plt.close()
+    # plt.plot(num_particles_list, vArr)
+    # plt.xlabel("Number of particles")
+    # plt.ylabel("Difference in time of equilibrium")
+    # plt.title("Difference in time of between HPP and FHP")
+    # plt.savefig(output_path + "/allEquilibriaDiff")
+    # plt.close()
         
 
 def plotAllIntervals(fhp_path_list, hpp_path_list, num_particles_list, output_path):
@@ -306,15 +316,15 @@ def plotAllIntervals(fhp_path_list, hpp_path_list, num_particles_list, output_pa
 def findEquilibrium(containerValues, num_particles):
     up = 1
     maxima = []
-    smoothing = 200
-    prevVal = np.mean(containerValues[0:smoothing])
-    f_value = 0.05
+    smoothing = 20
+    prevVal = np.mean(containerValues[0:smoothing*2])
+    f_value = 10000
     equilibrium = -1
     minOff = 0
-    for i in range(1, len(containerValues) - smoothing):
+    for i in range(smoothing, len(containerValues) - smoothing):
         if i < minOff:
             continue
-        currVal = np.mean(containerValues[i:(i+smoothing)])
+        currVal = np.mean(containerValues[(i-smoothing):(i+smoothing)])
         if up * (currVal - prevVal) < 0:
             maxima.append(i)
             if math.fabs(0.5 - (containerValues[i] / num_particles)) < f_value:
